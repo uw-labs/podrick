@@ -1,0 +1,59 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: golang:latest
+    steps:
+      - checkout
+      - run: go build ./...
+  vendor:
+    docker:
+      - image: golang:latest
+    steps:
+      - checkout
+      - run: go mod verify
+      - run: go mod tidy
+      - run: git diff --exit-code
+  generate:
+    docker:
+      - image: golang:latest
+    steps:
+      - checkout
+      - run: cd runtimes/podman/iopodman && make all
+  test:
+    machine:
+      image: ubuntu-1604:201903-01
+    # The CircleCI user's GOPATH
+    working_directory: /home/circleci/.go_workspace/src/github.com/uw-labs/podrick
+    steps:
+      - checkout
+      - run:
+          name: Update Go installation
+          command: |
+            go get github.com/lpar/goup &&
+            sudo rm -rf /usr/local/go &&
+            yes | sudo /home/circleci/.go_workspace/bin/goup --force --os linux --arch amd64 || true # swallow exit 141
+      - run:
+          name: Install podman
+          command: |
+            sudo apt-get update -qq &&
+            sudo apt-get install -qq -y software-properties-common uidmap &&
+            sudo add-apt-repository -y ppa:projectatomic/ppa &&
+            sudo apt-get update -qq &&
+            sudo apt-get -qq -y install podman slirp4netns
+      - run:
+          name: Serve podman varlink interface
+          command: podman varlink unix:/home/$(whoami)/podman.socket -t 0
+          background: true
+      - run:
+          name: Go test
+          command: PODMAN_VARLINK_ADDRESS=unix:/home/$(whoami)/podman.socket go test -coverprofile=coverage.txt -race -v ./...
+      - run: bash <(curl -s https://codecov.io/bash)
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - vendor
+      - generate
+      - test
