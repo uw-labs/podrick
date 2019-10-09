@@ -7,8 +7,8 @@ import (
 	"net"
 	"os"
 
-	"logur.dev/logur"
 	"github.com/varlink/go/varlink"
+	"logur.dev/logur"
 
 	"github.com/uw-labs/podrick"
 	podman "github.com/uw-labs/podrick/runtimes/podman/iopodman"
