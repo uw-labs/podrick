@@ -11,8 +11,7 @@ import (
 	"github.com/cenkalti/backoff"
 
 	"github.com/uw-labs/podrick"
-	// Register auto-runtime
-	_ "github.com/uw-labs/podrick/runtimes/podman"
+	_ "github.com/uw-labs/podrick/runtimes/podman" // Register auto-runtime
 )
 
 type jsonResp struct {
