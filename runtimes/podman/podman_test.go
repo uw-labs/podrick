@@ -6,9 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
-	"time"
-
-	"github.com/cenkalti/backoff"
 
 	"github.com/uw-labs/podrick"
 	_ "github.com/uw-labs/podrick/runtimes/podman" // Register auto-runtime
@@ -28,8 +25,18 @@ type jsonResp struct {
 }
 
 func TestHTTPBin(t *testing.T) {
+	lc := func(address string) error {
+		u := &url.URL{
+			Scheme: "http",
+			Host:   address,
+			Path:   "get",
+		}
+		_, err := http.Get(u.String())
+		return err
+	}
 	ctr, err := podrick.StartContainer("docker.io/kennethreitz/httpbin", "latest", "80",
 		podrick.WithLogger((*testLogger)(t)),
+		podrick.WithLivenessCheck(lc),
 	)
 	if err != nil {
 		t.Fatalf("Failed to start container: %v", err)
@@ -44,22 +51,6 @@ func TestHTTPBin(t *testing.T) {
 		Scheme: "http",
 		Host:   ctr.Address(),
 		Path:   "get",
-	}
-
-	bk := backoff.NewExponentialBackOff()
-	bk.MaxElapsedTime = 10 * time.Second
-	err = backoff.RetryNotify(
-		func() error {
-			_, err := http.Get(u.String())
-			return err
-		},
-		bk,
-		func(err error, next time.Duration) {
-			t.Logf("Failed to connect to container, retrying in %s", next.Truncate(time.Millisecond))
-		},
-	)
-	if err != nil {
-		t.Fatal(err)
 	}
 
 	resp, err := http.Get(u.String())

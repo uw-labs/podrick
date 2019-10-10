@@ -2,7 +2,9 @@ package podrick
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/cenkalti/backoff"
 	"logur.dev/logur"
 )
 
@@ -55,6 +57,26 @@ func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container,
 	err = ctr.StreamLogs(logur.NewWriter(conf.logger))
 	if err != nil {
 		return nil, fmt.Errorf("failed to stream container logs: %w", err)
+	}
+
+	if conf.liveCheck != nil {
+		bk := backoff.NewExponentialBackOff()
+		bk.MaxElapsedTime = 10 * time.Second
+		err = backoff.RetryNotify(
+			func() error {
+				return conf.liveCheck(ctr.Address())
+			},
+			bk,
+			func(err error, next time.Duration) {
+				conf.logger.Error("Liveness check failed", map[string]interface{}{
+					"retry_in": next.Truncate(time.Millisecond).String(),
+					"error":    err,
+				})
+			},
+		)
+		if err != nil {
+			return nil, fmt.Errorf("liveness check failed: %w", err)
+		}
 	}
 
 	return ctr, nil
