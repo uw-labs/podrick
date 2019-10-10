@@ -45,9 +45,24 @@ func WithRuntime(in Runtime) func(*config) {
 	}
 }
 
+// WithLivenessCheck defines a function to call repeatedly until it does not
+// error, to ascertain the successful startup of the container. The
+// function will be retried for 10 seconds, and if it does not return
+// a non-nil error before that time, the last error will be returned.
+func WithLivenessCheck(lc LivenessCheck) func(*config) {
+	return func(c *config) {
+		c.liveCheck = lc
+	}
+}
+
+// LivenessCheck is a type used to check the successful startup
+// of a container.
+type LivenessCheck func(address string) error
+
 type config struct {
 	ContainerConfig
 
-	logger  Logger
-	runtime Runtime
+	logger    Logger
+	runtime   Runtime
+	liveCheck LivenessCheck
 }
