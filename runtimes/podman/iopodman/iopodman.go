@@ -6,6 +6,7 @@ package iopodman
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/varlink/go/varlink"
 )
 
@@ -372,7 +373,7 @@ type Create struct {
 	Subuidname             *string   `json:"subuidname,omitempty"`
 	Subgidname             *string   `json:"subgidname,omitempty"`
 	Sysctl                 *[]string `json:"sysctl,omitempty"`
-	Systemd                *bool     `json:"systemd,omitempty"`
+	Systemd                *string   `json:"systemd,omitempty"`
 	Tmpfs                  *[]string `json:"tmpfs,omitempty"`
 	Tty                    *bool     `json:"tty,omitempty"`
 	Uidmap                 *[]string `json:"uidmap,omitempty"`
@@ -521,7 +522,9 @@ type ImageNotFound struct {
 }
 
 func (e ImageNotFound) Error() string {
-	return "io.podman.ImageNotFound"
+	s := "io.podman.ImageNotFound"
+	s += fmt.Sprintf("(Id: %v, Reason: %v)", e.Id, e.Reason)
+	return s
 }
 
 // ContainerNotFound means the container could not be found by the provided name or ID in local storage.
@@ -531,14 +534,17 @@ type ContainerNotFound struct {
 }
 
 func (e ContainerNotFound) Error() string {
-	return "io.podman.ContainerNotFound"
+	s := "io.podman.ContainerNotFound"
+	s += fmt.Sprintf("(Id: %v, Reason: %v)", e.Id, e.Reason)
+	return s
 }
 
 // NoContainerRunning means none of the containers requested are running in a command that requires a running container.
 type NoContainerRunning struct{}
 
 func (e NoContainerRunning) Error() string {
-	return "io.podman.NoContainerRunning"
+	s := "io.podman.NoContainerRunning"
+	return s
 }
 
 // PodNotFound means the pod could not be found by the provided name or ID in local storage.
@@ -548,7 +554,9 @@ type PodNotFound struct {
 }
 
 func (e PodNotFound) Error() string {
-	return "io.podman.PodNotFound"
+	s := "io.podman.PodNotFound"
+	s += fmt.Sprintf("(Name: %v, Reason: %v)", e.Name, e.Reason)
+	return s
 }
 
 // VolumeNotFound means the volume could not be found by the name or ID in local storage.
@@ -558,7 +566,9 @@ type VolumeNotFound struct {
 }
 
 func (e VolumeNotFound) Error() string {
-	return "io.podman.VolumeNotFound"
+	s := "io.podman.VolumeNotFound"
+	s += fmt.Sprintf("(Id: %v, Reason: %v)", e.Id, e.Reason)
+	return s
 }
 
 // PodContainerError means a container associated with a pod failed to perform an operation. It contains
@@ -569,7 +579,9 @@ type PodContainerError struct {
 }
 
 func (e PodContainerError) Error() string {
-	return "io.podman.PodContainerError"
+	s := "io.podman.PodContainerError"
+	s += fmt.Sprintf("(Podname: %v, Errors: %v)", e.Podname, e.Errors)
+	return s
 }
 
 // NoContainersInPod means a pod has no containers on which to perform the operation. It contains
@@ -579,7 +591,9 @@ type NoContainersInPod struct {
 }
 
 func (e NoContainersInPod) Error() string {
-	return "io.podman.NoContainersInPod"
+	s := "io.podman.NoContainersInPod"
+	s += fmt.Sprintf("(Name: %v)", e.Name)
+	return s
 }
 
 // InvalidState indicates that a container or pod was in an improper state for the requested operation
@@ -589,7 +603,9 @@ type InvalidState struct {
 }
 
 func (e InvalidState) Error() string {
-	return "io.podman.InvalidState"
+	s := "io.podman.InvalidState"
+	s += fmt.Sprintf("(Id: %v, Reason: %v)", e.Id, e.Reason)
+	return s
 }
 
 // ErrorOccurred is a generic error for an error that occurs during the execution.  The actual error message
@@ -599,7 +615,9 @@ type ErrorOccurred struct {
 }
 
 func (e ErrorOccurred) Error() string {
-	return "io.podman.ErrorOccurred"
+	s := "io.podman.ErrorOccurred"
+	s += fmt.Sprintf("(Reason: %v)", e.Reason)
+	return s
 }
 
 // RuntimeErrors generally means a runtime could not be found or gotten.
@@ -608,7 +626,9 @@ type RuntimeError struct {
 }
 
 func (e RuntimeError) Error() string {
-	return "io.podman.RuntimeError"
+	s := "io.podman.RuntimeError"
+	s += fmt.Sprintf("(Reason: %v)", e.Reason)
+	return s
 }
 
 // The Podman endpoint requires that you use a streaming connection.
@@ -617,7 +637,9 @@ type WantsMoreRequired struct {
 }
 
 func (e WantsMoreRequired) Error() string {
-	return "io.podman.WantsMoreRequired"
+	s := "io.podman.WantsMoreRequired"
+	s += fmt.Sprintf("(Reason: %v)", e.Reason)
+	return s
 }
 
 // Container is already stopped
@@ -626,7 +648,9 @@ type ErrCtrStopped struct {
 }
 
 func (e ErrCtrStopped) Error() string {
-	return "io.podman.ErrCtrStopped"
+	s := "io.podman.ErrCtrStopped"
+	s += fmt.Sprintf("(Id: %v)", e.Id)
+	return s
 }
 
 // This function requires CGroupsV2 to run in rootless mode.
@@ -635,7 +659,9 @@ type ErrRequiresCgroupsV2ForRootless struct {
 }
 
 func (e ErrRequiresCgroupsV2ForRootless) Error() string {
-	return "io.podman.ErrRequiresCgroupsV2ForRootless"
+	s := "io.podman.ErrRequiresCgroupsV2ForRootless"
+	s += fmt.Sprintf("(Reason: %v)", e.Reason)
+	return s
 }
 
 func Dispatch_Error(err error) error {
@@ -7860,7 +7886,7 @@ type Create (
     subuidname: ?string,
     subgidname: ?string,
     sysctl: ?[]string,
-    systemd: ?bool,
+    systemd: ?string,
     tmpfs: ?[]string,
     tty: ?bool,
     uidmap: ?[]string,
