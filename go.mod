@@ -21,7 +21,7 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
-	github.com/varlink/go v0.0.0-20190924105800-0ad3cc7fadf0
+	github.com/varlink/go v0.0.0-20191010094605-9223db1343dc
 	golang.org/x/net v0.0.0-20190921015927-1a5e07d1ff72 // indirect
 	golang.org/x/sys v0.0.0-20191008105621-543471e840be // indirect
 	gotest.tools v2.2.0+incompatible // indirect
