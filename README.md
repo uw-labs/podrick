@@ -84,6 +84,10 @@ func TestDatabase(t *testing.T) {
 		podrick.WithRuntime(&podman.Runtime{
 			Logger: log,
 		}),
+		podrick.WithLivenessCheck(func(address string) error {
+			_, err := http.Get("http://"+address+"/get")
+			return err
+		}),
 	)
 	if err != nil {
 		t.Fatal(err.Error())
