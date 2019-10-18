@@ -11,7 +11,7 @@ Dynamically create and destroy containers for tests, within
 your Go application. Support for both [Podman](https://podman.io)
 and [Docker](https://docker.com) runtimes is built-in.
 
-Inspired by and built on [dockertest](https://github.com/ory/dockertest).
+Inspired by [dockertest](https://github.com/ory/dockertest).
 
 ## Usage
 

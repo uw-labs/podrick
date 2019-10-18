@@ -5,6 +5,7 @@
 package iopodman
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/varlink/go/varlink"
@@ -822,21 +823,21 @@ type GetVersion_methods struct{}
 
 func GetVersion() GetVersion_methods { return GetVersion_methods{} }
 
-func (m GetVersion_methods) Call(c *varlink.Connection) (version_out_ string, go_version_out_ string, git_commit_out_ string, built_out_ string, os_arch_out_ string, remote_api_version_out_ int64, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m GetVersion_methods) Call(ctx context.Context, c *varlink.Connection) (version_out_ string, go_version_out_ string, git_commit_out_ string, built_out_ string, os_arch_out_ string, remote_api_version_out_ int64, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	version_out_, go_version_out_, git_commit_out_, built_out_, os_arch_out_, remote_api_version_out_, _, err_ = receive()
+	version_out_, go_version_out_, git_commit_out_, built_out_, os_arch_out_, remote_api_version_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetVersion_methods) Send(c *varlink.Connection, flags uint64) (func() (string, string, string, string, string, int64, uint64, error), error) {
-	receive, err := c.Send("io.podman.GetVersion", nil, flags)
+func (m GetVersion_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) (string, string, string, string, string, int64, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.GetVersion", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (version_out_ string, go_version_out_ string, git_commit_out_ string, built_out_ string, os_arch_out_ string, remote_api_version_out_ int64, flags uint64, err error) {
+	return func(context.Context) (version_out_ string, go_version_out_ string, git_commit_out_ string, built_out_ string, os_arch_out_ string, remote_api_version_out_ int64, flags uint64, err error) {
 		var out struct {
 			Version            string `json:"version"`
 			Go_version         string `json:"go_version"`
@@ -845,7 +846,7 @@ func (m GetVersion_methods) Send(c *varlink.Connection, flags uint64) (func() (s
 			Os_arch            string `json:"os_arch"`
 			Remote_api_version int64  `json:"remote_api_version"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -866,25 +867,25 @@ type GetInfo_methods struct{}
 
 func GetInfo() GetInfo_methods { return GetInfo_methods{} }
 
-func (m GetInfo_methods) Call(c *varlink.Connection) (info_out_ PodmanInfo, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m GetInfo_methods) Call(ctx context.Context, c *varlink.Connection) (info_out_ PodmanInfo, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	info_out_, _, err_ = receive()
+	info_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetInfo_methods) Send(c *varlink.Connection, flags uint64) (func() (PodmanInfo, uint64, error), error) {
-	receive, err := c.Send("io.podman.GetInfo", nil, flags)
+func (m GetInfo_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) (PodmanInfo, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.GetInfo", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (info_out_ PodmanInfo, flags uint64, err error) {
+	return func(context.Context) (info_out_ PodmanInfo, flags uint64, err error) {
 		var out struct {
 			Info PodmanInfo `json:"info"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -900,25 +901,25 @@ type ListContainers_methods struct{}
 
 func ListContainers() ListContainers_methods { return ListContainers_methods{} }
 
-func (m ListContainers_methods) Call(c *varlink.Connection) (containers_out_ []Container, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m ListContainers_methods) Call(ctx context.Context, c *varlink.Connection) (containers_out_ []Container, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	containers_out_, _, err_ = receive()
+	containers_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListContainers_methods) Send(c *varlink.Connection, flags uint64) (func() ([]Container, uint64, error), error) {
-	receive, err := c.Send("io.podman.ListContainers", nil, flags)
+func (m ListContainers_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]Container, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.ListContainers", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (containers_out_ []Container, flags uint64, err error) {
+	return func(context.Context) (containers_out_ []Container, flags uint64, err error) {
 		var out struct {
 			Containers []Container `json:"containers"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -932,29 +933,29 @@ type Ps_methods struct{}
 
 func Ps() Ps_methods { return Ps_methods{} }
 
-func (m Ps_methods) Call(c *varlink.Connection, opts_in_ PsOpts) (containers_out_ []PsContainer, err_ error) {
-	receive, err_ := m.Send(c, 0, opts_in_)
+func (m Ps_methods) Call(ctx context.Context, c *varlink.Connection, opts_in_ PsOpts) (containers_out_ []PsContainer, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, opts_in_)
 	if err_ != nil {
 		return
 	}
-	containers_out_, _, err_ = receive()
+	containers_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m Ps_methods) Send(c *varlink.Connection, flags uint64, opts_in_ PsOpts) (func() ([]PsContainer, uint64, error), error) {
+func (m Ps_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, opts_in_ PsOpts) (func(ctx context.Context) ([]PsContainer, uint64, error), error) {
 	var in struct {
 		Opts PsOpts `json:"opts"`
 	}
 	in.Opts = opts_in_
-	receive, err := c.Send("io.podman.Ps", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Ps", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (containers_out_ []PsContainer, flags uint64, err error) {
+	return func(context.Context) (containers_out_ []PsContainer, flags uint64, err error) {
 		var out struct {
 			Containers []PsContainer `json:"containers"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -968,29 +969,29 @@ type GetContainersByStatus_methods struct{}
 
 func GetContainersByStatus() GetContainersByStatus_methods { return GetContainersByStatus_methods{} }
 
-func (m GetContainersByStatus_methods) Call(c *varlink.Connection, status_in_ []string) (containerS_out_ []Container, err_ error) {
-	receive, err_ := m.Send(c, 0, status_in_)
+func (m GetContainersByStatus_methods) Call(ctx context.Context, c *varlink.Connection, status_in_ []string) (containerS_out_ []Container, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, status_in_)
 	if err_ != nil {
 		return
 	}
-	containerS_out_, _, err_ = receive()
+	containerS_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainersByStatus_methods) Send(c *varlink.Connection, flags uint64, status_in_ []string) (func() ([]Container, uint64, error), error) {
+func (m GetContainersByStatus_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, status_in_ []string) (func(ctx context.Context) ([]Container, uint64, error), error) {
 	var in struct {
 		Status []string `json:"status"`
 	}
 	in.Status = []string(status_in_)
-	receive, err := c.Send("io.podman.GetContainersByStatus", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainersByStatus", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (containerS_out_ []Container, flags uint64, err error) {
+	return func(context.Context) (containerS_out_ []Container, flags uint64, err error) {
 		var out struct {
 			ContainerS []Container `json:"containerS"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1004,31 +1005,31 @@ type Top_methods struct{}
 
 func Top() Top_methods { return Top_methods{} }
 
-func (m Top_methods) Call(c *varlink.Connection, nameOrID_in_ string, descriptors_in_ []string) (top_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, nameOrID_in_, descriptors_in_)
+func (m Top_methods) Call(ctx context.Context, c *varlink.Connection, nameOrID_in_ string, descriptors_in_ []string) (top_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, nameOrID_in_, descriptors_in_)
 	if err_ != nil {
 		return
 	}
-	top_out_, _, err_ = receive()
+	top_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m Top_methods) Send(c *varlink.Connection, flags uint64, nameOrID_in_ string, descriptors_in_ []string) (func() ([]string, uint64, error), error) {
+func (m Top_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, nameOrID_in_ string, descriptors_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		NameOrID    string   `json:"nameOrID"`
 		Descriptors []string `json:"descriptors"`
 	}
 	in.NameOrID = nameOrID_in_
 	in.Descriptors = []string(descriptors_in_)
-	receive, err := c.Send("io.podman.Top", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Top", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (top_out_ []string, flags uint64, err error) {
+	return func(context.Context) (top_out_ []string, flags uint64, err error) {
 		var out struct {
 			Top []string `json:"top"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1044,29 +1045,29 @@ type HealthCheckRun_methods struct{}
 
 func HealthCheckRun() HealthCheckRun_methods { return HealthCheckRun_methods{} }
 
-func (m HealthCheckRun_methods) Call(c *varlink.Connection, nameOrID_in_ string) (healthCheckStatus_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, nameOrID_in_)
+func (m HealthCheckRun_methods) Call(ctx context.Context, c *varlink.Connection, nameOrID_in_ string) (healthCheckStatus_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, nameOrID_in_)
 	if err_ != nil {
 		return
 	}
-	healthCheckStatus_out_, _, err_ = receive()
+	healthCheckStatus_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m HealthCheckRun_methods) Send(c *varlink.Connection, flags uint64, nameOrID_in_ string) (func() (string, uint64, error), error) {
+func (m HealthCheckRun_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, nameOrID_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		NameOrID string `json:"nameOrID"`
 	}
 	in.NameOrID = nameOrID_in_
-	receive, err := c.Send("io.podman.HealthCheckRun", in, flags)
+	receive, err := c.Send(ctx, "io.podman.HealthCheckRun", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (healthCheckStatus_out_ string, flags uint64, err error) {
+	return func(context.Context) (healthCheckStatus_out_ string, flags uint64, err error) {
 		var out struct {
 			HealthCheckStatus string `json:"healthCheckStatus"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1084,29 +1085,29 @@ type GetContainer_methods struct{}
 
 func GetContainer() GetContainer_methods { return GetContainer_methods{} }
 
-func (m GetContainer_methods) Call(c *varlink.Connection, id_in_ string) (container_out_ Container, err_ error) {
-	receive, err_ := m.Send(c, 0, id_in_)
+func (m GetContainer_methods) Call(ctx context.Context, c *varlink.Connection, id_in_ string) (container_out_ Container, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, id_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainer_methods) Send(c *varlink.Connection, flags uint64, id_in_ string) (func() (Container, uint64, error), error) {
+func (m GetContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, id_in_ string) (func(ctx context.Context) (Container, uint64, error), error) {
 	var in struct {
 		Id string `json:"id"`
 	}
 	in.Id = id_in_
-	receive, err := c.Send("io.podman.GetContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ Container, flags uint64, err error) {
+	return func(context.Context) (container_out_ Container, flags uint64, err error) {
 		var out struct {
 			Container Container `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1123,16 +1124,16 @@ type GetContainersByContext_methods struct{}
 
 func GetContainersByContext() GetContainersByContext_methods { return GetContainersByContext_methods{} }
 
-func (m GetContainersByContext_methods) Call(c *varlink.Connection, all_in_ bool, latest_in_ bool, args_in_ []string) (containers_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, all_in_, latest_in_, args_in_)
+func (m GetContainersByContext_methods) Call(ctx context.Context, c *varlink.Connection, all_in_ bool, latest_in_ bool, args_in_ []string) (containers_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, all_in_, latest_in_, args_in_)
 	if err_ != nil {
 		return
 	}
-	containers_out_, _, err_ = receive()
+	containers_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainersByContext_methods) Send(c *varlink.Connection, flags uint64, all_in_ bool, latest_in_ bool, args_in_ []string) (func() ([]string, uint64, error), error) {
+func (m GetContainersByContext_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, all_in_ bool, latest_in_ bool, args_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		All    bool     `json:"all"`
 		Latest bool     `json:"latest"`
@@ -1141,15 +1142,15 @@ func (m GetContainersByContext_methods) Send(c *varlink.Connection, flags uint64
 	in.All = all_in_
 	in.Latest = latest_in_
 	in.Args = []string(args_in_)
-	receive, err := c.Send("io.podman.GetContainersByContext", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainersByContext", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (containers_out_ []string, flags uint64, err error) {
+	return func(context.Context) (containers_out_ []string, flags uint64, err error) {
 		var out struct {
 			Containers []string `json:"containers"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1164,29 +1165,29 @@ type CreateContainer_methods struct{}
 
 func CreateContainer() CreateContainer_methods { return CreateContainer_methods{} }
 
-func (m CreateContainer_methods) Call(c *varlink.Connection, create_in_ Create) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, create_in_)
+func (m CreateContainer_methods) Call(ctx context.Context, c *varlink.Connection, create_in_ Create) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, create_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m CreateContainer_methods) Send(c *varlink.Connection, flags uint64, create_in_ Create) (func() (string, uint64, error), error) {
+func (m CreateContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, create_in_ Create) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Create Create `json:"create"`
 	}
 	in.Create = create_in_
-	receive, err := c.Send("io.podman.CreateContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.CreateContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1203,29 +1204,29 @@ type InspectContainer_methods struct{}
 
 func InspectContainer() InspectContainer_methods { return InspectContainer_methods{} }
 
-func (m InspectContainer_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m InspectContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m InspectContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m InspectContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.InspectContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.InspectContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1255,31 +1256,31 @@ type ListContainerProcesses_methods struct{}
 
 func ListContainerProcesses() ListContainerProcesses_methods { return ListContainerProcesses_methods{} }
 
-func (m ListContainerProcesses_methods) Call(c *varlink.Connection, name_in_ string, opts_in_ []string) (container_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, opts_in_)
+func (m ListContainerProcesses_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, opts_in_ []string) (container_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, opts_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListContainerProcesses_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, opts_in_ []string) (func() ([]string, uint64, error), error) {
+func (m ListContainerProcesses_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, opts_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		Name string   `json:"name"`
 		Opts []string `json:"opts"`
 	}
 	in.Name = name_in_
 	in.Opts = []string(opts_in_)
-	receive, err := c.Send("io.podman.ListContainerProcesses", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ListContainerProcesses", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ []string, flags uint64, err error) {
+	return func(context.Context) (container_out_ []string, flags uint64, err error) {
 		var out struct {
 			Container []string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1297,29 +1298,29 @@ type GetContainerLogs_methods struct{}
 
 func GetContainerLogs() GetContainerLogs_methods { return GetContainerLogs_methods{} }
 
-func (m GetContainerLogs_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m GetContainerLogs_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainerLogs_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() ([]string, uint64, error), error) {
+func (m GetContainerLogs_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.GetContainerLogs", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainerLogs", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ []string, flags uint64, err error) {
+	return func(context.Context) (container_out_ []string, flags uint64, err error) {
 		var out struct {
 			Container []string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1333,16 +1334,16 @@ type GetContainersLogs_methods struct{}
 
 func GetContainersLogs() GetContainersLogs_methods { return GetContainersLogs_methods{} }
 
-func (m GetContainersLogs_methods) Call(c *varlink.Connection, names_in_ []string, follow_in_ bool, latest_in_ bool, since_in_ string, tail_in_ int64, timestamps_in_ bool) (log_out_ LogLine, err_ error) {
-	receive, err_ := m.Send(c, 0, names_in_, follow_in_, latest_in_, since_in_, tail_in_, timestamps_in_)
+func (m GetContainersLogs_methods) Call(ctx context.Context, c *varlink.Connection, names_in_ []string, follow_in_ bool, latest_in_ bool, since_in_ string, tail_in_ int64, timestamps_in_ bool) (log_out_ LogLine, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, names_in_, follow_in_, latest_in_, since_in_, tail_in_, timestamps_in_)
 	if err_ != nil {
 		return
 	}
-	log_out_, _, err_ = receive()
+	log_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainersLogs_methods) Send(c *varlink.Connection, flags uint64, names_in_ []string, follow_in_ bool, latest_in_ bool, since_in_ string, tail_in_ int64, timestamps_in_ bool) (func() (LogLine, uint64, error), error) {
+func (m GetContainersLogs_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, names_in_ []string, follow_in_ bool, latest_in_ bool, since_in_ string, tail_in_ int64, timestamps_in_ bool) (func(ctx context.Context) (LogLine, uint64, error), error) {
 	var in struct {
 		Names      []string `json:"names"`
 		Follow     bool     `json:"follow"`
@@ -1357,15 +1358,15 @@ func (m GetContainersLogs_methods) Send(c *varlink.Connection, flags uint64, nam
 	in.Since = since_in_
 	in.Tail = tail_in_
 	in.Timestamps = timestamps_in_
-	receive, err := c.Send("io.podman.GetContainersLogs", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainersLogs", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (log_out_ LogLine, flags uint64, err error) {
+	return func(context.Context) (log_out_ LogLine, flags uint64, err error) {
 		var out struct {
 			Log LogLine `json:"log"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1381,29 +1382,29 @@ type ListContainerChanges_methods struct{}
 
 func ListContainerChanges() ListContainerChanges_methods { return ListContainerChanges_methods{} }
 
-func (m ListContainerChanges_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ ContainerChanges, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m ListContainerChanges_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ ContainerChanges, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListContainerChanges_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (ContainerChanges, uint64, error), error) {
+func (m ListContainerChanges_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (ContainerChanges, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.ListContainerChanges", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ListContainerChanges", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ ContainerChanges, flags uint64, err error) {
+	return func(context.Context) (container_out_ ContainerChanges, flags uint64, err error) {
 		var out struct {
 			Container ContainerChanges `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1428,31 +1429,31 @@ type ExportContainer_methods struct{}
 
 func ExportContainer() ExportContainer_methods { return ExportContainer_methods{} }
 
-func (m ExportContainer_methods) Call(c *varlink.Connection, name_in_ string, path_in_ string) (tarfile_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, path_in_)
+func (m ExportContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, path_in_ string) (tarfile_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, path_in_)
 	if err_ != nil {
 		return
 	}
-	tarfile_out_, _, err_ = receive()
+	tarfile_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ExportContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, path_in_ string) (func() (string, uint64, error), error) {
+func (m ExportContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, path_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 		Path string `json:"path"`
 	}
 	in.Name = name_in_
 	in.Path = path_in_
-	receive, err := c.Send("io.podman.ExportContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ExportContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (tarfile_out_ string, flags uint64, err error) {
+	return func(context.Context) (tarfile_out_ string, flags uint64, err error) {
 		var out struct {
 			Tarfile string `json:"tarfile"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1491,29 +1492,29 @@ type GetContainerStats_methods struct{}
 
 func GetContainerStats() GetContainerStats_methods { return GetContainerStats_methods{} }
 
-func (m GetContainerStats_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ ContainerStats, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m GetContainerStats_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ ContainerStats, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainerStats_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (ContainerStats, uint64, error), error) {
+func (m GetContainerStats_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (ContainerStats, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.GetContainerStats", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainerStats", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ ContainerStats, flags uint64, err error) {
+	return func(context.Context) (container_out_ ContainerStats, flags uint64, err error) {
 		var out struct {
 			Container ContainerStats `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1531,29 +1532,29 @@ func GetContainerStatsWithHistory() GetContainerStatsWithHistory_methods {
 	return GetContainerStatsWithHistory_methods{}
 }
 
-func (m GetContainerStatsWithHistory_methods) Call(c *varlink.Connection, previousStats_in_ ContainerStats) (container_out_ ContainerStats, err_ error) {
-	receive, err_ := m.Send(c, 0, previousStats_in_)
+func (m GetContainerStatsWithHistory_methods) Call(ctx context.Context, c *varlink.Connection, previousStats_in_ ContainerStats) (container_out_ ContainerStats, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, previousStats_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetContainerStatsWithHistory_methods) Send(c *varlink.Connection, flags uint64, previousStats_in_ ContainerStats) (func() (ContainerStats, uint64, error), error) {
+func (m GetContainerStatsWithHistory_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, previousStats_in_ ContainerStats) (func(ctx context.Context) (ContainerStats, uint64, error), error) {
 	var in struct {
 		PreviousStats ContainerStats `json:"previousStats"`
 	}
 	in.PreviousStats = previousStats_in_
-	receive, err := c.Send("io.podman.GetContainerStatsWithHistory", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetContainerStatsWithHistory", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ ContainerStats, flags uint64, err error) {
+	return func(context.Context) (container_out_ ContainerStats, flags uint64, err error) {
 		var out struct {
 			Container ContainerStats `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1570,29 +1571,29 @@ type StartContainer_methods struct{}
 
 func StartContainer() StartContainer_methods { return StartContainer_methods{} }
 
-func (m StartContainer_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m StartContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m StartContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m StartContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.StartContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.StartContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1617,31 +1618,31 @@ type StopContainer_methods struct{}
 
 func StopContainer() StopContainer_methods { return StopContainer_methods{} }
 
-func (m StopContainer_methods) Call(c *varlink.Connection, name_in_ string, timeout_in_ int64) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, timeout_in_)
+func (m StopContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, timeout_in_ int64) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, timeout_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m StopContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func() (string, uint64, error), error) {
+func (m StopContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name    string `json:"name"`
 		Timeout int64  `json:"timeout"`
 	}
 	in.Name = name_in_
 	in.Timeout = timeout_in_
-	receive, err := c.Send("io.podman.StopContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.StopContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1661,29 +1662,29 @@ type InitContainer_methods struct{}
 
 func InitContainer() InitContainer_methods { return InitContainer_methods{} }
 
-func (m InitContainer_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m InitContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m InitContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m InitContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.InitContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.InitContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1701,31 +1702,31 @@ type RestartContainer_methods struct{}
 
 func RestartContainer() RestartContainer_methods { return RestartContainer_methods{} }
 
-func (m RestartContainer_methods) Call(c *varlink.Connection, name_in_ string, timeout_in_ int64) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, timeout_in_)
+func (m RestartContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, timeout_in_ int64) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, timeout_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m RestartContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func() (string, uint64, error), error) {
+func (m RestartContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name    string `json:"name"`
 		Timeout int64  `json:"timeout"`
 	}
 	in.Name = name_in_
 	in.Timeout = timeout_in_
-	receive, err := c.Send("io.podman.RestartContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.RestartContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1742,31 +1743,31 @@ type KillContainer_methods struct{}
 
 func KillContainer() KillContainer_methods { return KillContainer_methods{} }
 
-func (m KillContainer_methods) Call(c *varlink.Connection, name_in_ string, signal_in_ int64) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, signal_in_)
+func (m KillContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, signal_in_ int64) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, signal_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m KillContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, signal_in_ int64) (func() (string, uint64, error), error) {
+func (m KillContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, signal_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name   string `json:"name"`
 		Signal int64  `json:"signal"`
 	}
 	in.Name = name_in_
 	in.Signal = signal_in_
-	receive, err := c.Send("io.podman.KillContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.KillContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1783,29 +1784,29 @@ type PauseContainer_methods struct{}
 
 func PauseContainer() PauseContainer_methods { return PauseContainer_methods{} }
 
-func (m PauseContainer_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m PauseContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m PauseContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m PauseContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.PauseContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.PauseContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1822,29 +1823,29 @@ type UnpauseContainer_methods struct{}
 
 func UnpauseContainer() UnpauseContainer_methods { return UnpauseContainer_methods{} }
 
-func (m UnpauseContainer_methods) Call(c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m UnpauseContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m UnpauseContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m UnpauseContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.UnpauseContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.UnpauseContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1860,16 +1861,16 @@ type Attach_methods struct{}
 
 func Attach() Attach_methods { return Attach_methods{} }
 
-func (m Attach_methods) Call(c *varlink.Connection, name_in_ string, detachKeys_in_ string, start_in_ bool) (err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, detachKeys_in_, start_in_)
+func (m Attach_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, detachKeys_in_ string, start_in_ bool) (err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, detachKeys_in_, start_in_)
 	if err_ != nil {
 		return
 	}
-	_, err_ = receive()
+	_, err_ = receive(ctx)
 	return
 }
 
-func (m Attach_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, detachKeys_in_ string, start_in_ bool) (func() (uint64, error), error) {
+func (m Attach_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, detachKeys_in_ string, start_in_ bool) (func(ctx context.Context) (uint64, error), error) {
 	var in struct {
 		Name       string `json:"name"`
 		DetachKeys string `json:"detachKeys"`
@@ -1878,12 +1879,12 @@ func (m Attach_methods) Send(c *varlink.Connection, flags uint64, name_in_ strin
 	in.Name = name_in_
 	in.DetachKeys = detachKeys_in_
 	in.Start = start_in_
-	receive, err := c.Send("io.podman.Attach", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Attach", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (flags uint64, err error) {
-		flags, err = receive(nil)
+	return func(context.Context) (flags uint64, err error) {
+		flags, err = receive(ctx, nil)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1896,26 +1897,26 @@ type AttachControl_methods struct{}
 
 func AttachControl() AttachControl_methods { return AttachControl_methods{} }
 
-func (m AttachControl_methods) Call(c *varlink.Connection, name_in_ string) (err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m AttachControl_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	_, err_ = receive()
+	_, err_ = receive(ctx)
 	return
 }
 
-func (m AttachControl_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (uint64, error), error) {
+func (m AttachControl_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.AttachControl", in, flags)
+	receive, err := c.Send(ctx, "io.podman.AttachControl", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (flags uint64, err error) {
-		flags, err = receive(nil)
+	return func(context.Context) (flags uint64, err error) {
+		flags, err = receive(ctx, nil)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1943,29 +1944,29 @@ type GetAttachSockets_methods struct{}
 
 func GetAttachSockets() GetAttachSockets_methods { return GetAttachSockets_methods{} }
 
-func (m GetAttachSockets_methods) Call(c *varlink.Connection, name_in_ string) (sockets_out_ Sockets, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m GetAttachSockets_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (sockets_out_ Sockets, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	sockets_out_, _, err_ = receive()
+	sockets_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetAttachSockets_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (Sockets, uint64, error), error) {
+func (m GetAttachSockets_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (Sockets, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.GetAttachSockets", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetAttachSockets", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (sockets_out_ Sockets, flags uint64, err error) {
+	return func(context.Context) (sockets_out_ Sockets, flags uint64, err error) {
 		var out struct {
 			Sockets Sockets `json:"sockets"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -1982,31 +1983,31 @@ type WaitContainer_methods struct{}
 
 func WaitContainer() WaitContainer_methods { return WaitContainer_methods{} }
 
-func (m WaitContainer_methods) Call(c *varlink.Connection, name_in_ string, interval_in_ int64) (exitcode_out_ int64, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, interval_in_)
+func (m WaitContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, interval_in_ int64) (exitcode_out_ int64, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, interval_in_)
 	if err_ != nil {
 		return
 	}
-	exitcode_out_, _, err_ = receive()
+	exitcode_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m WaitContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, interval_in_ int64) (func() (int64, uint64, error), error) {
+func (m WaitContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, interval_in_ int64) (func(ctx context.Context) (int64, uint64, error), error) {
 	var in struct {
 		Name     string `json:"name"`
 		Interval int64  `json:"interval"`
 	}
 	in.Name = name_in_
 	in.Interval = interval_in_
-	receive, err := c.Send("io.podman.WaitContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.WaitContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (exitcode_out_ int64, flags uint64, err error) {
+	return func(context.Context) (exitcode_out_ int64, flags uint64, err error) {
 		var out struct {
 			Exitcode int64 `json:"exitcode"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2033,16 +2034,16 @@ type RemoveContainer_methods struct{}
 
 func RemoveContainer() RemoveContainer_methods { return RemoveContainer_methods{} }
 
-func (m RemoveContainer_methods) Call(c *varlink.Connection, name_in_ string, force_in_ bool, removeVolumes_in_ bool) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, force_in_, removeVolumes_in_)
+func (m RemoveContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, force_in_ bool, removeVolumes_in_ bool) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, force_in_, removeVolumes_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m RemoveContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool, removeVolumes_in_ bool) (func() (string, uint64, error), error) {
+func (m RemoveContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool, removeVolumes_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name          string `json:"name"`
 		Force         bool   `json:"force"`
@@ -2051,15 +2052,15 @@ func (m RemoveContainer_methods) Send(c *varlink.Connection, flags uint64, name_
 	in.Name = name_in_
 	in.Force = force_in_
 	in.RemoveVolumes = removeVolumes_in_
-	receive, err := c.Send("io.podman.RemoveContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.RemoveContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2085,31 +2086,31 @@ type EvictContainer_methods struct{}
 
 func EvictContainer() EvictContainer_methods { return EvictContainer_methods{} }
 
-func (m EvictContainer_methods) Call(c *varlink.Connection, name_in_ string, removeVolumes_in_ bool) (container_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, removeVolumes_in_)
+func (m EvictContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, removeVolumes_in_ bool) (container_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, removeVolumes_in_)
 	if err_ != nil {
 		return
 	}
-	container_out_, _, err_ = receive()
+	container_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m EvictContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, removeVolumes_in_ bool) (func() (string, uint64, error), error) {
+func (m EvictContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, removeVolumes_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name          string `json:"name"`
 		RemoveVolumes bool   `json:"removeVolumes"`
 	}
 	in.Name = name_in_
 	in.RemoveVolumes = removeVolumes_in_
-	receive, err := c.Send("io.podman.EvictContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.EvictContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (container_out_ string, flags uint64, err error) {
+	return func(context.Context) (container_out_ string, flags uint64, err error) {
 		var out struct {
 			Container string `json:"container"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2139,25 +2140,25 @@ func DeleteStoppedContainers() DeleteStoppedContainers_methods {
 	return DeleteStoppedContainers_methods{}
 }
 
-func (m DeleteStoppedContainers_methods) Call(c *varlink.Connection) (containers_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m DeleteStoppedContainers_methods) Call(ctx context.Context, c *varlink.Connection) (containers_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	containers_out_, _, err_ = receive()
+	containers_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m DeleteStoppedContainers_methods) Send(c *varlink.Connection, flags uint64) (func() ([]string, uint64, error), error) {
-	receive, err := c.Send("io.podman.DeleteStoppedContainers", nil, flags)
+func (m DeleteStoppedContainers_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]string, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.DeleteStoppedContainers", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (containers_out_ []string, flags uint64, err error) {
+	return func(context.Context) (containers_out_ []string, flags uint64, err error) {
 		var out struct {
 			Containers []string `json:"containers"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2173,25 +2174,25 @@ type ListImages_methods struct{}
 
 func ListImages() ListImages_methods { return ListImages_methods{} }
 
-func (m ListImages_methods) Call(c *varlink.Connection) (images_out_ []Image, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m ListImages_methods) Call(ctx context.Context, c *varlink.Connection) (images_out_ []Image, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	images_out_, _, err_ = receive()
+	images_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListImages_methods) Send(c *varlink.Connection, flags uint64) (func() ([]Image, uint64, error), error) {
-	receive, err := c.Send("io.podman.ListImages", nil, flags)
+func (m ListImages_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]Image, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.ListImages", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (images_out_ []Image, flags uint64, err error) {
+	return func(context.Context) (images_out_ []Image, flags uint64, err error) {
 		var out struct {
 			Images []Image `json:"images"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2207,29 +2208,29 @@ type GetImage_methods struct{}
 
 func GetImage() GetImage_methods { return GetImage_methods{} }
 
-func (m GetImage_methods) Call(c *varlink.Connection, id_in_ string) (image_out_ Image, err_ error) {
-	receive, err_ := m.Send(c, 0, id_in_)
+func (m GetImage_methods) Call(ctx context.Context, c *varlink.Connection, id_in_ string) (image_out_ Image, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, id_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetImage_methods) Send(c *varlink.Connection, flags uint64, id_in_ string) (func() (Image, uint64, error), error) {
+func (m GetImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, id_in_ string) (func(ctx context.Context) (Image, uint64, error), error) {
 	var in struct {
 		Id string `json:"id"`
 	}
 	in.Id = id_in_
-	receive, err := c.Send("io.podman.GetImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ Image, flags uint64, err error) {
+	return func(context.Context) (image_out_ Image, flags uint64, err error) {
 		var out struct {
 			Image Image `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2281,29 +2282,29 @@ type BuildImage_methods struct{}
 
 func BuildImage() BuildImage_methods { return BuildImage_methods{} }
 
-func (m BuildImage_methods) Call(c *varlink.Connection, build_in_ BuildInfo) (image_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, build_in_)
+func (m BuildImage_methods) Call(ctx context.Context, c *varlink.Connection, build_in_ BuildInfo) (image_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, build_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m BuildImage_methods) Send(c *varlink.Connection, flags uint64, build_in_ BuildInfo) (func() (MoreResponse, uint64, error), error) {
+func (m BuildImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, build_in_ BuildInfo) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Build BuildInfo `json:"build"`
 	}
 	in.Build = build_in_
-	receive, err := c.Send("io.podman.BuildImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.BuildImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (image_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Image MoreResponse `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2320,29 +2321,29 @@ type InspectImage_methods struct{}
 
 func InspectImage() InspectImage_methods { return InspectImage_methods{} }
 
-func (m InspectImage_methods) Call(c *varlink.Connection, name_in_ string) (image_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m InspectImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (image_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m InspectImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m InspectImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.InspectImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.InspectImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ string, flags uint64, err error) {
+	return func(context.Context) (image_out_ string, flags uint64, err error) {
 		var out struct {
 			Image string `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2359,29 +2360,29 @@ type HistoryImage_methods struct{}
 
 func HistoryImage() HistoryImage_methods { return HistoryImage_methods{} }
 
-func (m HistoryImage_methods) Call(c *varlink.Connection, name_in_ string) (history_out_ []ImageHistory, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m HistoryImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (history_out_ []ImageHistory, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	history_out_, _, err_ = receive()
+	history_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m HistoryImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() ([]ImageHistory, uint64, error), error) {
+func (m HistoryImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) ([]ImageHistory, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.HistoryImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.HistoryImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (history_out_ []ImageHistory, flags uint64, err error) {
+	return func(context.Context) (history_out_ []ImageHistory, flags uint64, err error) {
 		var out struct {
 			History []ImageHistory `json:"history"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2398,16 +2399,16 @@ type PushImage_methods struct{}
 
 func PushImage() PushImage_methods { return PushImage_methods{} }
 
-func (m PushImage_methods) Call(c *varlink.Connection, name_in_ string, tag_in_ string, compress_in_ bool, format_in_ string, removeSignatures_in_ bool, signBy_in_ string) (reply_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, tag_in_, compress_in_, format_in_, removeSignatures_in_, signBy_in_)
+func (m PushImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, tag_in_ string, compress_in_ bool, format_in_ string, removeSignatures_in_ bool, signBy_in_ string) (reply_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, tag_in_, compress_in_, format_in_, removeSignatures_in_, signBy_in_)
 	if err_ != nil {
 		return
 	}
-	reply_out_, _, err_ = receive()
+	reply_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m PushImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, tag_in_ string, compress_in_ bool, format_in_ string, removeSignatures_in_ bool, signBy_in_ string) (func() (MoreResponse, uint64, error), error) {
+func (m PushImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, tag_in_ string, compress_in_ bool, format_in_ string, removeSignatures_in_ bool, signBy_in_ string) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Name             string `json:"name"`
 		Tag              string `json:"tag"`
@@ -2422,15 +2423,15 @@ func (m PushImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ st
 	in.Format = format_in_
 	in.RemoveSignatures = removeSignatures_in_
 	in.SignBy = signBy_in_
-	receive, err := c.Send("io.podman.PushImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.PushImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (reply_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (reply_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Reply MoreResponse `json:"reply"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2446,31 +2447,31 @@ type TagImage_methods struct{}
 
 func TagImage() TagImage_methods { return TagImage_methods{} }
 
-func (m TagImage_methods) Call(c *varlink.Connection, name_in_ string, tagged_in_ string) (image_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, tagged_in_)
+func (m TagImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, tagged_in_ string) (image_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, tagged_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m TagImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, tagged_in_ string) (func() (string, uint64, error), error) {
+func (m TagImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, tagged_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name   string `json:"name"`
 		Tagged string `json:"tagged"`
 	}
 	in.Name = name_in_
 	in.Tagged = tagged_in_
-	receive, err := c.Send("io.podman.TagImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.TagImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ string, flags uint64, err error) {
+	return func(context.Context) (image_out_ string, flags uint64, err error) {
 		var out struct {
 			Image string `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2494,31 +2495,31 @@ type RemoveImage_methods struct{}
 
 func RemoveImage() RemoveImage_methods { return RemoveImage_methods{} }
 
-func (m RemoveImage_methods) Call(c *varlink.Connection, name_in_ string, force_in_ bool) (image_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, force_in_)
+func (m RemoveImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, force_in_ bool) (image_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, force_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m RemoveImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func() (string, uint64, error), error) {
+func (m RemoveImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name  string `json:"name"`
 		Force bool   `json:"force"`
 	}
 	in.Name = name_in_
 	in.Force = force_in_
-	receive, err := c.Send("io.podman.RemoveImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.RemoveImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ string, flags uint64, err error) {
+	return func(context.Context) (image_out_ string, flags uint64, err error) {
 		var out struct {
 			Image string `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2535,16 +2536,16 @@ type SearchImages_methods struct{}
 
 func SearchImages() SearchImages_methods { return SearchImages_methods{} }
 
-func (m SearchImages_methods) Call(c *varlink.Connection, query_in_ string, limit_in_ *int64, filter_in_ ImageSearchFilter) (results_out_ []ImageSearchResult, err_ error) {
-	receive, err_ := m.Send(c, 0, query_in_, limit_in_, filter_in_)
+func (m SearchImages_methods) Call(ctx context.Context, c *varlink.Connection, query_in_ string, limit_in_ *int64, filter_in_ ImageSearchFilter) (results_out_ []ImageSearchResult, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, query_in_, limit_in_, filter_in_)
 	if err_ != nil {
 		return
 	}
-	results_out_, _, err_ = receive()
+	results_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m SearchImages_methods) Send(c *varlink.Connection, flags uint64, query_in_ string, limit_in_ *int64, filter_in_ ImageSearchFilter) (func() ([]ImageSearchResult, uint64, error), error) {
+func (m SearchImages_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, query_in_ string, limit_in_ *int64, filter_in_ ImageSearchFilter) (func(ctx context.Context) ([]ImageSearchResult, uint64, error), error) {
 	var in struct {
 		Query  string            `json:"query"`
 		Limit  *int64            `json:"limit,omitempty"`
@@ -2553,15 +2554,15 @@ func (m SearchImages_methods) Send(c *varlink.Connection, flags uint64, query_in
 	in.Query = query_in_
 	in.Limit = limit_in_
 	in.Filter = filter_in_
-	receive, err := c.Send("io.podman.SearchImages", in, flags)
+	receive, err := c.Send(ctx, "io.podman.SearchImages", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (results_out_ []ImageSearchResult, flags uint64, err error) {
+	return func(context.Context) (results_out_ []ImageSearchResult, flags uint64, err error) {
 		var out struct {
 			Results []ImageSearchResult `json:"results"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2589,25 +2590,25 @@ type DeleteUnusedImages_methods struct{}
 
 func DeleteUnusedImages() DeleteUnusedImages_methods { return DeleteUnusedImages_methods{} }
 
-func (m DeleteUnusedImages_methods) Call(c *varlink.Connection) (images_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m DeleteUnusedImages_methods) Call(ctx context.Context, c *varlink.Connection) (images_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	images_out_, _, err_ = receive()
+	images_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m DeleteUnusedImages_methods) Send(c *varlink.Connection, flags uint64) (func() ([]string, uint64, error), error) {
-	receive, err := c.Send("io.podman.DeleteUnusedImages", nil, flags)
+func (m DeleteUnusedImages_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]string, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.DeleteUnusedImages", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (images_out_ []string, flags uint64, err error) {
+	return func(context.Context) (images_out_ []string, flags uint64, err error) {
 		var out struct {
 			Images []string `json:"images"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2628,16 +2629,16 @@ type Commit_methods struct{}
 
 func Commit() Commit_methods { return Commit_methods{} }
 
-func (m Commit_methods) Call(c *varlink.Connection, name_in_ string, image_name_in_ string, changes_in_ []string, author_in_ string, message_in_ string, pause_in_ bool, manifestType_in_ string) (reply_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, image_name_in_, changes_in_, author_in_, message_in_, pause_in_, manifestType_in_)
+func (m Commit_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, image_name_in_ string, changes_in_ []string, author_in_ string, message_in_ string, pause_in_ bool, manifestType_in_ string) (reply_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, image_name_in_, changes_in_, author_in_, message_in_, pause_in_, manifestType_in_)
 	if err_ != nil {
 		return
 	}
-	reply_out_, _, err_ = receive()
+	reply_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m Commit_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, image_name_in_ string, changes_in_ []string, author_in_ string, message_in_ string, pause_in_ bool, manifestType_in_ string) (func() (MoreResponse, uint64, error), error) {
+func (m Commit_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, image_name_in_ string, changes_in_ []string, author_in_ string, message_in_ string, pause_in_ bool, manifestType_in_ string) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Name         string   `json:"name"`
 		Image_name   string   `json:"image_name"`
@@ -2654,15 +2655,15 @@ func (m Commit_methods) Send(c *varlink.Connection, flags uint64, name_in_ strin
 	in.Message = message_in_
 	in.Pause = pause_in_
 	in.ManifestType = manifestType_in_
-	receive, err := c.Send("io.podman.Commit", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Commit", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (reply_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (reply_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Reply MoreResponse `json:"reply"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2678,16 +2679,16 @@ type ImportImage_methods struct{}
 
 func ImportImage() ImportImage_methods { return ImportImage_methods{} }
 
-func (m ImportImage_methods) Call(c *varlink.Connection, source_in_ string, reference_in_ string, message_in_ string, changes_in_ []string, delete_in_ bool) (image_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, source_in_, reference_in_, message_in_, changes_in_, delete_in_)
+func (m ImportImage_methods) Call(ctx context.Context, c *varlink.Connection, source_in_ string, reference_in_ string, message_in_ string, changes_in_ []string, delete_in_ bool) (image_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, source_in_, reference_in_, message_in_, changes_in_, delete_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ImportImage_methods) Send(c *varlink.Connection, flags uint64, source_in_ string, reference_in_ string, message_in_ string, changes_in_ []string, delete_in_ bool) (func() (string, uint64, error), error) {
+func (m ImportImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, source_in_ string, reference_in_ string, message_in_ string, changes_in_ []string, delete_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Source    string   `json:"source"`
 		Reference string   `json:"reference"`
@@ -2700,15 +2701,15 @@ func (m ImportImage_methods) Send(c *varlink.Connection, flags uint64, source_in
 	in.Message = message_in_
 	in.Changes = []string(changes_in_)
 	in.Delete = delete_in_
-	receive, err := c.Send("io.podman.ImportImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ImportImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ string, flags uint64, err error) {
+	return func(context.Context) (image_out_ string, flags uint64, err error) {
 		var out struct {
 			Image string `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2727,16 +2728,16 @@ type ExportImage_methods struct{}
 
 func ExportImage() ExportImage_methods { return ExportImage_methods{} }
 
-func (m ExportImage_methods) Call(c *varlink.Connection, name_in_ string, destination_in_ string, compress_in_ bool, tags_in_ []string) (image_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, destination_in_, compress_in_, tags_in_)
+func (m ExportImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, destination_in_ string, compress_in_ bool, tags_in_ []string) (image_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, destination_in_, compress_in_, tags_in_)
 	if err_ != nil {
 		return
 	}
-	image_out_, _, err_ = receive()
+	image_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ExportImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, destination_in_ string, compress_in_ bool, tags_in_ []string) (func() (string, uint64, error), error) {
+func (m ExportImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, destination_in_ string, compress_in_ bool, tags_in_ []string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name        string   `json:"name"`
 		Destination string   `json:"destination"`
@@ -2747,15 +2748,15 @@ func (m ExportImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ 
 	in.Destination = destination_in_
 	in.Compress = compress_in_
 	in.Tags = []string(tags_in_)
-	receive, err := c.Send("io.podman.ExportImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ExportImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (image_out_ string, flags uint64, err error) {
+	return func(context.Context) (image_out_ string, flags uint64, err error) {
 		var out struct {
 			Image string `json:"image"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2772,29 +2773,29 @@ type PullImage_methods struct{}
 
 func PullImage() PullImage_methods { return PullImage_methods{} }
 
-func (m PullImage_methods) Call(c *varlink.Connection, name_in_ string) (reply_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m PullImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (reply_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	reply_out_, _, err_ = receive()
+	reply_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m PullImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (MoreResponse, uint64, error), error) {
+func (m PullImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.PullImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.PullImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (reply_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (reply_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Reply MoreResponse `json:"reply"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2821,29 +2822,29 @@ type CreatePod_methods struct{}
 
 func CreatePod() CreatePod_methods { return CreatePod_methods{} }
 
-func (m CreatePod_methods) Call(c *varlink.Connection, create_in_ PodCreate) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, create_in_)
+func (m CreatePod_methods) Call(ctx context.Context, c *varlink.Connection, create_in_ PodCreate) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, create_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m CreatePod_methods) Send(c *varlink.Connection, flags uint64, create_in_ PodCreate) (func() (string, uint64, error), error) {
+func (m CreatePod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, create_in_ PodCreate) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Create PodCreate `json:"create"`
 	}
 	in.Create = create_in_
-	receive, err := c.Send("io.podman.CreatePod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.CreatePod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2902,25 +2903,25 @@ type ListPods_methods struct{}
 
 func ListPods() ListPods_methods { return ListPods_methods{} }
 
-func (m ListPods_methods) Call(c *varlink.Connection) (pods_out_ []ListPodData, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m ListPods_methods) Call(ctx context.Context, c *varlink.Connection) (pods_out_ []ListPodData, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	pods_out_, _, err_ = receive()
+	pods_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListPods_methods) Send(c *varlink.Connection, flags uint64) (func() ([]ListPodData, uint64, error), error) {
-	receive, err := c.Send("io.podman.ListPods", nil, flags)
+func (m ListPods_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]ListPodData, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.ListPods", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pods_out_ []ListPodData, flags uint64, err error) {
+	return func(context.Context) (pods_out_ []ListPodData, flags uint64, err error) {
 		var out struct {
 			Pods []ListPodData `json:"pods"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -2963,29 +2964,29 @@ type GetPod_methods struct{}
 
 func GetPod() GetPod_methods { return GetPod_methods{} }
 
-func (m GetPod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ ListPodData, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m GetPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ ListPodData, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (ListPodData, uint64, error), error) {
+func (m GetPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (ListPodData, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.GetPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ ListPodData, flags uint64, err error) {
+	return func(context.Context) (pod_out_ ListPodData, flags uint64, err error) {
 		var out struct {
 			Pod ListPodData `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3002,29 +3003,29 @@ type InspectPod_methods struct{}
 
 func InspectPod() InspectPod_methods { return InspectPod_methods{} }
 
-func (m InspectPod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m InspectPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m InspectPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m InspectPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.InspectPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.InspectPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3050,29 +3051,29 @@ type StartPod_methods struct{}
 
 func StartPod() StartPod_methods { return StartPod_methods{} }
 
-func (m StartPod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m StartPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m StartPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m StartPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.StartPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.StartPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3099,31 +3100,31 @@ type StopPod_methods struct{}
 
 func StopPod() StopPod_methods { return StopPod_methods{} }
 
-func (m StopPod_methods) Call(c *varlink.Connection, name_in_ string, timeout_in_ int64) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, timeout_in_)
+func (m StopPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, timeout_in_ int64) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, timeout_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m StopPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func() (string, uint64, error), error) {
+func (m StopPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, timeout_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name    string `json:"name"`
 		Timeout int64  `json:"timeout"`
 	}
 	in.Name = name_in_
 	in.Timeout = timeout_in_
-	receive, err := c.Send("io.podman.StopPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.StopPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3150,29 +3151,29 @@ type RestartPod_methods struct{}
 
 func RestartPod() RestartPod_methods { return RestartPod_methods{} }
 
-func (m RestartPod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m RestartPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m RestartPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m RestartPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.RestartPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.RestartPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3199,31 +3200,31 @@ type KillPod_methods struct{}
 
 func KillPod() KillPod_methods { return KillPod_methods{} }
 
-func (m KillPod_methods) Call(c *varlink.Connection, name_in_ string, signal_in_ int64) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, signal_in_)
+func (m KillPod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, signal_in_ int64) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, signal_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m KillPod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, signal_in_ int64) (func() (string, uint64, error), error) {
+func (m KillPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, signal_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name   string `json:"name"`
 		Signal int64  `json:"signal"`
 	}
 	in.Name = name_in_
 	in.Signal = signal_in_
-	receive, err := c.Send("io.podman.KillPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.KillPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3250,29 +3251,29 @@ type PausePod_methods struct{}
 
 func PausePod() PausePod_methods { return PausePod_methods{} }
 
-func (m PausePod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m PausePod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m PausePod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m PausePod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.PausePod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.PausePod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3299,29 +3300,29 @@ type UnpausePod_methods struct{}
 
 func UnpausePod() UnpausePod_methods { return UnpausePod_methods{} }
 
-func (m UnpausePod_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m UnpausePod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m UnpausePod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m UnpausePod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.UnpausePod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.UnpausePod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3349,31 +3350,31 @@ type RemovePod_methods struct{}
 
 func RemovePod() RemovePod_methods { return RemovePod_methods{} }
 
-func (m RemovePod_methods) Call(c *varlink.Connection, name_in_ string, force_in_ bool) (pod_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, force_in_)
+func (m RemovePod_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, force_in_ bool) (pod_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, force_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m RemovePod_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func() (string, uint64, error), error) {
+func (m RemovePod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name  string `json:"name"`
 		Force bool   `json:"force"`
 	}
 	in.Name = name_in_
 	in.Force = force_in_
-	receive, err := c.Send("io.podman.RemovePod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.RemovePod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, flags uint64, err error) {
 		var out struct {
 			Pod string `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3387,16 +3388,16 @@ type TopPod_methods struct{}
 
 func TopPod() TopPod_methods { return TopPod_methods{} }
 
-func (m TopPod_methods) Call(c *varlink.Connection, pod_in_ string, latest_in_ bool, descriptors_in_ []string) (stats_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, pod_in_, latest_in_, descriptors_in_)
+func (m TopPod_methods) Call(ctx context.Context, c *varlink.Connection, pod_in_ string, latest_in_ bool, descriptors_in_ []string) (stats_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, pod_in_, latest_in_, descriptors_in_)
 	if err_ != nil {
 		return
 	}
-	stats_out_, _, err_ = receive()
+	stats_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m TopPod_methods) Send(c *varlink.Connection, flags uint64, pod_in_ string, latest_in_ bool, descriptors_in_ []string) (func() ([]string, uint64, error), error) {
+func (m TopPod_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, pod_in_ string, latest_in_ bool, descriptors_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		Pod         string   `json:"pod"`
 		Latest      bool     `json:"latest"`
@@ -3405,15 +3406,15 @@ func (m TopPod_methods) Send(c *varlink.Connection, flags uint64, pod_in_ string
 	in.Pod = pod_in_
 	in.Latest = latest_in_
 	in.Descriptors = []string(descriptors_in_)
-	receive, err := c.Send("io.podman.TopPod", in, flags)
+	receive, err := c.Send(ctx, "io.podman.TopPod", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (stats_out_ []string, flags uint64, err error) {
+	return func(context.Context) (stats_out_ []string, flags uint64, err error) {
 		var out struct {
 			Stats []string `json:"stats"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3455,30 +3456,30 @@ type GetPodStats_methods struct{}
 
 func GetPodStats() GetPodStats_methods { return GetPodStats_methods{} }
 
-func (m GetPodStats_methods) Call(c *varlink.Connection, name_in_ string) (pod_out_ string, containers_out_ []ContainerStats, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m GetPodStats_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (pod_out_ string, containers_out_ []ContainerStats, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, containers_out_, _, err_ = receive()
+	pod_out_, containers_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetPodStats_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, []ContainerStats, uint64, error), error) {
+func (m GetPodStats_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, []ContainerStats, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.GetPodStats", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetPodStats", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ string, containers_out_ []ContainerStats, flags uint64, err error) {
+	return func(context.Context) (pod_out_ string, containers_out_ []ContainerStats, flags uint64, err error) {
 		var out struct {
 			Pod        string           `json:"pod"`
 			Containers []ContainerStats `json:"containers"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3494,29 +3495,29 @@ type GetPodsByStatus_methods struct{}
 
 func GetPodsByStatus() GetPodsByStatus_methods { return GetPodsByStatus_methods{} }
 
-func (m GetPodsByStatus_methods) Call(c *varlink.Connection, statuses_in_ []string) (pods_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, statuses_in_)
+func (m GetPodsByStatus_methods) Call(ctx context.Context, c *varlink.Connection, statuses_in_ []string) (pods_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, statuses_in_)
 	if err_ != nil {
 		return
 	}
-	pods_out_, _, err_ = receive()
+	pods_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetPodsByStatus_methods) Send(c *varlink.Connection, flags uint64, statuses_in_ []string) (func() ([]string, uint64, error), error) {
+func (m GetPodsByStatus_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, statuses_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		Statuses []string `json:"statuses"`
 	}
 	in.Statuses = []string(statuses_in_)
-	receive, err := c.Send("io.podman.GetPodsByStatus", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetPodsByStatus", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pods_out_ []string, flags uint64, err error) {
+	return func(context.Context) (pods_out_ []string, flags uint64, err error) {
 		var out struct {
 			Pods []string `json:"pods"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3540,29 +3541,29 @@ type ImageExists_methods struct{}
 
 func ImageExists() ImageExists_methods { return ImageExists_methods{} }
 
-func (m ImageExists_methods) Call(c *varlink.Connection, name_in_ string) (exists_out_ int64, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m ImageExists_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (exists_out_ int64, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	exists_out_, _, err_ = receive()
+	exists_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ImageExists_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (int64, uint64, error), error) {
+func (m ImageExists_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (int64, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.ImageExists", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ImageExists", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (exists_out_ int64, flags uint64, err error) {
+	return func(context.Context) (exists_out_ int64, flags uint64, err error) {
 		var out struct {
 			Exists int64 `json:"exists"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3585,29 +3586,29 @@ type ContainerExists_methods struct{}
 
 func ContainerExists() ContainerExists_methods { return ContainerExists_methods{} }
 
-func (m ContainerExists_methods) Call(c *varlink.Connection, name_in_ string) (exists_out_ int64, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m ContainerExists_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (exists_out_ int64, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	exists_out_, _, err_ = receive()
+	exists_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerExists_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (int64, uint64, error), error) {
+func (m ContainerExists_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (int64, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.ContainerExists", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerExists", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (exists_out_ int64, flags uint64, err error) {
+	return func(context.Context) (exists_out_ int64, flags uint64, err error) {
 		var out struct {
 			Exists int64 `json:"exists"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3623,16 +3624,16 @@ type ContainerCheckpoint_methods struct{}
 
 func ContainerCheckpoint() ContainerCheckpoint_methods { return ContainerCheckpoint_methods{} }
 
-func (m ContainerCheckpoint_methods) Call(c *varlink.Connection, name_in_ string, keep_in_ bool, leaveRunning_in_ bool, tcpEstablished_in_ bool) (id_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, keep_in_, leaveRunning_in_, tcpEstablished_in_)
+func (m ContainerCheckpoint_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, keep_in_ bool, leaveRunning_in_ bool, tcpEstablished_in_ bool) (id_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, keep_in_, leaveRunning_in_, tcpEstablished_in_)
 	if err_ != nil {
 		return
 	}
-	id_out_, _, err_ = receive()
+	id_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerCheckpoint_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, keep_in_ bool, leaveRunning_in_ bool, tcpEstablished_in_ bool) (func() (string, uint64, error), error) {
+func (m ContainerCheckpoint_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, keep_in_ bool, leaveRunning_in_ bool, tcpEstablished_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name           string `json:"name"`
 		Keep           bool   `json:"keep"`
@@ -3643,15 +3644,15 @@ func (m ContainerCheckpoint_methods) Send(c *varlink.Connection, flags uint64, n
 	in.Keep = keep_in_
 	in.LeaveRunning = leaveRunning_in_
 	in.TcpEstablished = tcpEstablished_in_
-	receive, err := c.Send("io.podman.ContainerCheckpoint", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerCheckpoint", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (id_out_ string, flags uint64, err error) {
+	return func(context.Context) (id_out_ string, flags uint64, err error) {
 		var out struct {
 			Id string `json:"id"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3668,16 +3669,16 @@ type ContainerRestore_methods struct{}
 
 func ContainerRestore() ContainerRestore_methods { return ContainerRestore_methods{} }
 
-func (m ContainerRestore_methods) Call(c *varlink.Connection, name_in_ string, keep_in_ bool, tcpEstablished_in_ bool) (id_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, keep_in_, tcpEstablished_in_)
+func (m ContainerRestore_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, keep_in_ bool, tcpEstablished_in_ bool) (id_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, keep_in_, tcpEstablished_in_)
 	if err_ != nil {
 		return
 	}
-	id_out_, _, err_ = receive()
+	id_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerRestore_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, keep_in_ bool, tcpEstablished_in_ bool) (func() (string, uint64, error), error) {
+func (m ContainerRestore_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, keep_in_ bool, tcpEstablished_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name           string `json:"name"`
 		Keep           bool   `json:"keep"`
@@ -3686,15 +3687,15 @@ func (m ContainerRestore_methods) Send(c *varlink.Connection, flags uint64, name
 	in.Name = name_in_
 	in.Keep = keep_in_
 	in.TcpEstablished = tcpEstablished_in_
-	receive, err := c.Send("io.podman.ContainerRestore", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerRestore", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (id_out_ string, flags uint64, err error) {
+	return func(context.Context) (id_out_ string, flags uint64, err error) {
 		var out struct {
 			Id string `json:"id"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3709,26 +3710,26 @@ type ContainerRunlabel_methods struct{}
 
 func ContainerRunlabel() ContainerRunlabel_methods { return ContainerRunlabel_methods{} }
 
-func (m ContainerRunlabel_methods) Call(c *varlink.Connection, runlabel_in_ Runlabel) (err_ error) {
-	receive, err_ := m.Send(c, 0, runlabel_in_)
+func (m ContainerRunlabel_methods) Call(ctx context.Context, c *varlink.Connection, runlabel_in_ Runlabel) (err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, runlabel_in_)
 	if err_ != nil {
 		return
 	}
-	_, err_ = receive()
+	_, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerRunlabel_methods) Send(c *varlink.Connection, flags uint64, runlabel_in_ Runlabel) (func() (uint64, error), error) {
+func (m ContainerRunlabel_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, runlabel_in_ Runlabel) (func(ctx context.Context) (uint64, error), error) {
 	var in struct {
 		Runlabel Runlabel `json:"runlabel"`
 	}
 	in.Runlabel = runlabel_in_
-	receive, err := c.Send("io.podman.ContainerRunlabel", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerRunlabel", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (flags uint64, err error) {
-		flags, err = receive(nil)
+	return func(context.Context) (flags uint64, err error) {
+		flags, err = receive(ctx, nil)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3742,26 +3743,26 @@ type ExecContainer_methods struct{}
 
 func ExecContainer() ExecContainer_methods { return ExecContainer_methods{} }
 
-func (m ExecContainer_methods) Call(c *varlink.Connection, opts_in_ ExecOpts) (err_ error) {
-	receive, err_ := m.Send(c, 0, opts_in_)
+func (m ExecContainer_methods) Call(ctx context.Context, c *varlink.Connection, opts_in_ ExecOpts) (err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, opts_in_)
 	if err_ != nil {
 		return
 	}
-	_, err_ = receive()
+	_, err_ = receive(ctx)
 	return
 }
 
-func (m ExecContainer_methods) Send(c *varlink.Connection, flags uint64, opts_in_ ExecOpts) (func() (uint64, error), error) {
+func (m ExecContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, opts_in_ ExecOpts) (func(ctx context.Context) (uint64, error), error) {
 	var in struct {
 		Opts ExecOpts `json:"opts"`
 	}
 	in.Opts = opts_in_
-	receive, err := c.Send("io.podman.ExecContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ExecContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (flags uint64, err error) {
-		flags, err = receive(nil)
+	return func(context.Context) (flags uint64, err error) {
+		flags, err = receive(ctx, nil)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3786,25 +3787,25 @@ type ListContainerMounts_methods struct{}
 
 func ListContainerMounts() ListContainerMounts_methods { return ListContainerMounts_methods{} }
 
-func (m ListContainerMounts_methods) Call(c *varlink.Connection) (mounts_out_ map[string]string, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m ListContainerMounts_methods) Call(ctx context.Context, c *varlink.Connection) (mounts_out_ map[string]string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	mounts_out_, _, err_ = receive()
+	mounts_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ListContainerMounts_methods) Send(c *varlink.Connection, flags uint64) (func() (map[string]string, uint64, error), error) {
-	receive, err := c.Send("io.podman.ListContainerMounts", nil, flags)
+func (m ListContainerMounts_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) (map[string]string, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.ListContainerMounts", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (mounts_out_ map[string]string, flags uint64, err error) {
+	return func(context.Context) (mounts_out_ map[string]string, flags uint64, err error) {
 		var out struct {
 			Mounts map[string]string `json:"mounts"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3826,29 +3827,29 @@ type MountContainer_methods struct{}
 
 func MountContainer() MountContainer_methods { return MountContainer_methods{} }
 
-func (m MountContainer_methods) Call(c *varlink.Connection, name_in_ string) (path_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m MountContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (path_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	path_out_, _, err_ = receive()
+	path_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m MountContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m MountContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.MountContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.MountContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (path_out_ string, flags uint64, err error) {
+	return func(context.Context) (path_out_ string, flags uint64, err error) {
 		var out struct {
 			Path string `json:"path"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3868,28 +3869,28 @@ type UnmountContainer_methods struct{}
 
 func UnmountContainer() UnmountContainer_methods { return UnmountContainer_methods{} }
 
-func (m UnmountContainer_methods) Call(c *varlink.Connection, name_in_ string, force_in_ bool) (err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, force_in_)
+func (m UnmountContainer_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, force_in_ bool) (err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, force_in_)
 	if err_ != nil {
 		return
 	}
-	_, err_ = receive()
+	_, err_ = receive(ctx)
 	return
 }
 
-func (m UnmountContainer_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func() (uint64, error), error) {
+func (m UnmountContainer_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, force_in_ bool) (func(ctx context.Context) (uint64, error), error) {
 	var in struct {
 		Name  string `json:"name"`
 		Force bool   `json:"force"`
 	}
 	in.Name = name_in_
 	in.Force = force_in_
-	receive, err := c.Send("io.podman.UnmountContainer", in, flags)
+	receive, err := c.Send(ctx, "io.podman.UnmountContainer", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (flags uint64, err error) {
-		flags, err = receive(nil)
+	return func(context.Context) (flags uint64, err error) {
+		flags, err = receive(ctx, nil)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3904,29 +3905,29 @@ type ImagesPrune_methods struct{}
 
 func ImagesPrune() ImagesPrune_methods { return ImagesPrune_methods{} }
 
-func (m ImagesPrune_methods) Call(c *varlink.Connection, all_in_ bool) (pruned_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, all_in_)
+func (m ImagesPrune_methods) Call(ctx context.Context, c *varlink.Connection, all_in_ bool) (pruned_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, all_in_)
 	if err_ != nil {
 		return
 	}
-	pruned_out_, _, err_ = receive()
+	pruned_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ImagesPrune_methods) Send(c *varlink.Connection, flags uint64, all_in_ bool) (func() ([]string, uint64, error), error) {
+func (m ImagesPrune_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, all_in_ bool) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		All bool `json:"all"`
 	}
 	in.All = all_in_
-	receive, err := c.Send("io.podman.ImagesPrune", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ImagesPrune", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pruned_out_ []string, flags uint64, err error) {
+	return func(context.Context) (pruned_out_ []string, flags uint64, err error) {
 		var out struct {
 			Pruned []string `json:"pruned"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3942,31 +3943,31 @@ type GenerateKube_methods struct{}
 
 func GenerateKube() GenerateKube_methods { return GenerateKube_methods{} }
 
-func (m GenerateKube_methods) Call(c *varlink.Connection, name_in_ string, service_in_ bool) (pod_out_ KubePodService, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, service_in_)
+func (m GenerateKube_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, service_in_ bool) (pod_out_ KubePodService, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, service_in_)
 	if err_ != nil {
 		return
 	}
-	pod_out_, _, err_ = receive()
+	pod_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GenerateKube_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, service_in_ bool) (func() (KubePodService, uint64, error), error) {
+func (m GenerateKube_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, service_in_ bool) (func(ctx context.Context) (KubePodService, uint64, error), error) {
 	var in struct {
 		Name    string `json:"name"`
 		Service bool   `json:"service"`
 	}
 	in.Name = name_in_
 	in.Service = service_in_
-	receive, err := c.Send("io.podman.GenerateKube", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GenerateKube", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pod_out_ KubePodService, flags uint64, err error) {
+	return func(context.Context) (pod_out_ KubePodService, flags uint64, err error) {
 		var out struct {
 			Pod KubePodService `json:"pod"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -3982,29 +3983,29 @@ type ContainerConfig_methods struct{}
 
 func ContainerConfig() ContainerConfig_methods { return ContainerConfig_methods{} }
 
-func (m ContainerConfig_methods) Call(c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m ContainerConfig_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerConfig_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m ContainerConfig_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.ContainerConfig", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerConfig", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4020,31 +4021,31 @@ type ContainerArtifacts_methods struct{}
 
 func ContainerArtifacts() ContainerArtifacts_methods { return ContainerArtifacts_methods{} }
 
-func (m ContainerArtifacts_methods) Call(c *varlink.Connection, name_in_ string, artifactName_in_ string) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, artifactName_in_)
+func (m ContainerArtifacts_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, artifactName_in_ string) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, artifactName_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerArtifacts_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, artifactName_in_ string) (func() (string, uint64, error), error) {
+func (m ContainerArtifacts_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, artifactName_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name         string `json:"name"`
 		ArtifactName string `json:"artifactName"`
 	}
 	in.Name = name_in_
 	in.ArtifactName = artifactName_in_
-	receive, err := c.Send("io.podman.ContainerArtifacts", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerArtifacts", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4060,31 +4061,31 @@ type ContainerInspectData_methods struct{}
 
 func ContainerInspectData() ContainerInspectData_methods { return ContainerInspectData_methods{} }
 
-func (m ContainerInspectData_methods) Call(c *varlink.Connection, name_in_ string, size_in_ bool) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, size_in_)
+func (m ContainerInspectData_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, size_in_ bool) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, size_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerInspectData_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, size_in_ bool) (func() (string, uint64, error), error) {
+func (m ContainerInspectData_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, size_in_ bool) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 		Size bool   `json:"size"`
 	}
 	in.Name = name_in_
 	in.Size = size_in_
-	receive, err := c.Send("io.podman.ContainerInspectData", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerInspectData", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4100,29 +4101,29 @@ type ContainerStateData_methods struct{}
 
 func ContainerStateData() ContainerStateData_methods { return ContainerStateData_methods{} }
 
-func (m ContainerStateData_methods) Call(c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m ContainerStateData_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ContainerStateData_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m ContainerStateData_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.ContainerStateData", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ContainerStateData", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4138,29 +4139,29 @@ type PodStateData_methods struct{}
 
 func PodStateData() PodStateData_methods { return PodStateData_methods{} }
 
-func (m PodStateData_methods) Call(c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m PodStateData_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m PodStateData_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m PodStateData_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.PodStateData", in, flags)
+	receive, err := c.Send(ctx, "io.podman.PodStateData", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4175,29 +4176,29 @@ type CreateFromCC_methods struct{}
 
 func CreateFromCC() CreateFromCC_methods { return CreateFromCC_methods{} }
 
-func (m CreateFromCC_methods) Call(c *varlink.Connection, in_in_ []string) (id_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, in_in_)
+func (m CreateFromCC_methods) Call(ctx context.Context, c *varlink.Connection, in_in_ []string) (id_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, in_in_)
 	if err_ != nil {
 		return
 	}
-	id_out_, _, err_ = receive()
+	id_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m CreateFromCC_methods) Send(c *varlink.Connection, flags uint64, in_in_ []string) (func() (string, uint64, error), error) {
+func (m CreateFromCC_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, in_in_ []string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		In []string `json:"in"`
 	}
 	in.In = []string(in_in_)
-	receive, err := c.Send("io.podman.CreateFromCC", in, flags)
+	receive, err := c.Send(ctx, "io.podman.CreateFromCC", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (id_out_ string, flags uint64, err error) {
+	return func(context.Context) (id_out_ string, flags uint64, err error) {
 		var out struct {
 			Id string `json:"id"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4212,29 +4213,29 @@ type Spec_methods struct{}
 
 func Spec() Spec_methods { return Spec_methods{} }
 
-func (m Spec_methods) Call(c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m Spec_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (config_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	config_out_, _, err_ = receive()
+	config_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m Spec_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m Spec_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.Spec", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Spec", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (config_out_ string, flags uint64, err error) {
+	return func(context.Context) (config_out_ string, flags uint64, err error) {
 		var out struct {
 			Config string `json:"config"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4249,31 +4250,31 @@ type SendFile_methods struct{}
 
 func SendFile() SendFile_methods { return SendFile_methods{} }
 
-func (m SendFile_methods) Call(c *varlink.Connection, type_in_ string, length_in_ int64) (file_handle_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, type_in_, length_in_)
+func (m SendFile_methods) Call(ctx context.Context, c *varlink.Connection, type_in_ string, length_in_ int64) (file_handle_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, type_in_, length_in_)
 	if err_ != nil {
 		return
 	}
-	file_handle_out_, _, err_ = receive()
+	file_handle_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m SendFile_methods) Send(c *varlink.Connection, flags uint64, type_in_ string, length_in_ int64) (func() (string, uint64, error), error) {
+func (m SendFile_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, type_in_ string, length_in_ int64) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Type   string `json:"type"`
 		Length int64  `json:"length"`
 	}
 	in.Type = type_in_
 	in.Length = length_in_
-	receive, err := c.Send("io.podman.SendFile", in, flags)
+	receive, err := c.Send(ctx, "io.podman.SendFile", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (file_handle_out_ string, flags uint64, err error) {
+	return func(context.Context) (file_handle_out_ string, flags uint64, err error) {
 		var out struct {
 			File_handle string `json:"file_handle"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4288,31 +4289,31 @@ type ReceiveFile_methods struct{}
 
 func ReceiveFile() ReceiveFile_methods { return ReceiveFile_methods{} }
 
-func (m ReceiveFile_methods) Call(c *varlink.Connection, path_in_ string, delete_in_ bool) (len_out_ int64, err_ error) {
-	receive, err_ := m.Send(c, 0, path_in_, delete_in_)
+func (m ReceiveFile_methods) Call(ctx context.Context, c *varlink.Connection, path_in_ string, delete_in_ bool) (len_out_ int64, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, path_in_, delete_in_)
 	if err_ != nil {
 		return
 	}
-	len_out_, _, err_ = receive()
+	len_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ReceiveFile_methods) Send(c *varlink.Connection, flags uint64, path_in_ string, delete_in_ bool) (func() (int64, uint64, error), error) {
+func (m ReceiveFile_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, path_in_ string, delete_in_ bool) (func(ctx context.Context) (int64, uint64, error), error) {
 	var in struct {
 		Path   string `json:"path"`
 		Delete bool   `json:"delete"`
 	}
 	in.Path = path_in_
 	in.Delete = delete_in_
-	receive, err := c.Send("io.podman.ReceiveFile", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ReceiveFile", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (len_out_ int64, flags uint64, err error) {
+	return func(context.Context) (len_out_ int64, flags uint64, err error) {
 		var out struct {
 			Len int64 `json:"len"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4327,29 +4328,29 @@ type VolumeCreate_methods struct{}
 
 func VolumeCreate() VolumeCreate_methods { return VolumeCreate_methods{} }
 
-func (m VolumeCreate_methods) Call(c *varlink.Connection, options_in_ VolumeCreateOpts) (volumeName_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, options_in_)
+func (m VolumeCreate_methods) Call(ctx context.Context, c *varlink.Connection, options_in_ VolumeCreateOpts) (volumeName_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, options_in_)
 	if err_ != nil {
 		return
 	}
-	volumeName_out_, _, err_ = receive()
+	volumeName_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m VolumeCreate_methods) Send(c *varlink.Connection, flags uint64, options_in_ VolumeCreateOpts) (func() (string, uint64, error), error) {
+func (m VolumeCreate_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, options_in_ VolumeCreateOpts) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Options VolumeCreateOpts `json:"options"`
 	}
 	in.Options = options_in_
-	receive, err := c.Send("io.podman.VolumeCreate", in, flags)
+	receive, err := c.Send(ctx, "io.podman.VolumeCreate", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (volumeName_out_ string, flags uint64, err error) {
+	return func(context.Context) (volumeName_out_ string, flags uint64, err error) {
 		var out struct {
 			VolumeName string `json:"volumeName"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4364,30 +4365,30 @@ type VolumeRemove_methods struct{}
 
 func VolumeRemove() VolumeRemove_methods { return VolumeRemove_methods{} }
 
-func (m VolumeRemove_methods) Call(c *varlink.Connection, options_in_ VolumeRemoveOpts) (successes_out_ []string, failures_out_ map[string]string, err_ error) {
-	receive, err_ := m.Send(c, 0, options_in_)
+func (m VolumeRemove_methods) Call(ctx context.Context, c *varlink.Connection, options_in_ VolumeRemoveOpts) (successes_out_ []string, failures_out_ map[string]string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, options_in_)
 	if err_ != nil {
 		return
 	}
-	successes_out_, failures_out_, _, err_ = receive()
+	successes_out_, failures_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m VolumeRemove_methods) Send(c *varlink.Connection, flags uint64, options_in_ VolumeRemoveOpts) (func() ([]string, map[string]string, uint64, error), error) {
+func (m VolumeRemove_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, options_in_ VolumeRemoveOpts) (func(ctx context.Context) ([]string, map[string]string, uint64, error), error) {
 	var in struct {
 		Options VolumeRemoveOpts `json:"options"`
 	}
 	in.Options = options_in_
-	receive, err := c.Send("io.podman.VolumeRemove", in, flags)
+	receive, err := c.Send(ctx, "io.podman.VolumeRemove", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (successes_out_ []string, failures_out_ map[string]string, flags uint64, err error) {
+	return func(context.Context) (successes_out_ []string, failures_out_ map[string]string, flags uint64, err error) {
 		var out struct {
 			Successes []string          `json:"successes"`
 			Failures  map[string]string `json:"failures"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4403,31 +4404,31 @@ type GetVolumes_methods struct{}
 
 func GetVolumes() GetVolumes_methods { return GetVolumes_methods{} }
 
-func (m GetVolumes_methods) Call(c *varlink.Connection, args_in_ []string, all_in_ bool) (volumes_out_ []Volume, err_ error) {
-	receive, err_ := m.Send(c, 0, args_in_, all_in_)
+func (m GetVolumes_methods) Call(ctx context.Context, c *varlink.Connection, args_in_ []string, all_in_ bool) (volumes_out_ []Volume, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, args_in_, all_in_)
 	if err_ != nil {
 		return
 	}
-	volumes_out_, _, err_ = receive()
+	volumes_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetVolumes_methods) Send(c *varlink.Connection, flags uint64, args_in_ []string, all_in_ bool) (func() ([]Volume, uint64, error), error) {
+func (m GetVolumes_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, args_in_ []string, all_in_ bool) (func(ctx context.Context) ([]Volume, uint64, error), error) {
 	var in struct {
 		Args []string `json:"args"`
 		All  bool     `json:"all"`
 	}
 	in.Args = []string(args_in_)
 	in.All = all_in_
-	receive, err := c.Send("io.podman.GetVolumes", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetVolumes", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (volumes_out_ []Volume, flags uint64, err error) {
+	return func(context.Context) (volumes_out_ []Volume, flags uint64, err error) {
 		var out struct {
 			Volumes []Volume `json:"volumes"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4442,26 +4443,26 @@ type VolumesPrune_methods struct{}
 
 func VolumesPrune() VolumesPrune_methods { return VolumesPrune_methods{} }
 
-func (m VolumesPrune_methods) Call(c *varlink.Connection) (prunedNames_out_ []string, prunedErrors_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m VolumesPrune_methods) Call(ctx context.Context, c *varlink.Connection) (prunedNames_out_ []string, prunedErrors_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	prunedNames_out_, prunedErrors_out_, _, err_ = receive()
+	prunedNames_out_, prunedErrors_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m VolumesPrune_methods) Send(c *varlink.Connection, flags uint64) (func() ([]string, []string, uint64, error), error) {
-	receive, err := c.Send("io.podman.VolumesPrune", nil, flags)
+func (m VolumesPrune_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) ([]string, []string, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.VolumesPrune", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (prunedNames_out_ []string, prunedErrors_out_ []string, flags uint64, err error) {
+	return func(context.Context) (prunedNames_out_ []string, prunedErrors_out_ []string, flags uint64, err error) {
 		var out struct {
 			PrunedNames  []string `json:"prunedNames"`
 			PrunedErrors []string `json:"prunedErrors"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4477,29 +4478,29 @@ type ImageSave_methods struct{}
 
 func ImageSave() ImageSave_methods { return ImageSave_methods{} }
 
-func (m ImageSave_methods) Call(c *varlink.Connection, options_in_ ImageSaveOptions) (reply_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, options_in_)
+func (m ImageSave_methods) Call(ctx context.Context, c *varlink.Connection, options_in_ ImageSaveOptions) (reply_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, options_in_)
 	if err_ != nil {
 		return
 	}
-	reply_out_, _, err_ = receive()
+	reply_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m ImageSave_methods) Send(c *varlink.Connection, flags uint64, options_in_ ImageSaveOptions) (func() (MoreResponse, uint64, error), error) {
+func (m ImageSave_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, options_in_ ImageSaveOptions) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Options ImageSaveOptions `json:"options"`
 	}
 	in.Options = options_in_
-	receive, err := c.Send("io.podman.ImageSave", in, flags)
+	receive, err := c.Send(ctx, "io.podman.ImageSave", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (reply_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (reply_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Reply MoreResponse `json:"reply"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4516,16 +4517,16 @@ type GetPodsByContext_methods struct{}
 
 func GetPodsByContext() GetPodsByContext_methods { return GetPodsByContext_methods{} }
 
-func (m GetPodsByContext_methods) Call(c *varlink.Connection, all_in_ bool, latest_in_ bool, args_in_ []string) (pods_out_ []string, err_ error) {
-	receive, err_ := m.Send(c, 0, all_in_, latest_in_, args_in_)
+func (m GetPodsByContext_methods) Call(ctx context.Context, c *varlink.Connection, all_in_ bool, latest_in_ bool, args_in_ []string) (pods_out_ []string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, all_in_, latest_in_, args_in_)
 	if err_ != nil {
 		return
 	}
-	pods_out_, _, err_ = receive()
+	pods_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetPodsByContext_methods) Send(c *varlink.Connection, flags uint64, all_in_ bool, latest_in_ bool, args_in_ []string) (func() ([]string, uint64, error), error) {
+func (m GetPodsByContext_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, all_in_ bool, latest_in_ bool, args_in_ []string) (func(ctx context.Context) ([]string, uint64, error), error) {
 	var in struct {
 		All    bool     `json:"all"`
 		Latest bool     `json:"latest"`
@@ -4534,15 +4535,15 @@ func (m GetPodsByContext_methods) Send(c *varlink.Connection, flags uint64, all_
 	in.All = all_in_
 	in.Latest = latest_in_
 	in.Args = []string(args_in_)
-	receive, err := c.Send("io.podman.GetPodsByContext", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetPodsByContext", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (pods_out_ []string, flags uint64, err error) {
+	return func(context.Context) (pods_out_ []string, flags uint64, err error) {
 		var out struct {
 			Pods []string `json:"pods"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4557,16 +4558,16 @@ type LoadImage_methods struct{}
 
 func LoadImage() LoadImage_methods { return LoadImage_methods{} }
 
-func (m LoadImage_methods) Call(c *varlink.Connection, name_in_ string, inputFile_in_ string, quiet_in_ bool, deleteFile_in_ bool) (reply_out_ MoreResponse, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_, inputFile_in_, quiet_in_, deleteFile_in_)
+func (m LoadImage_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string, inputFile_in_ string, quiet_in_ bool, deleteFile_in_ bool) (reply_out_ MoreResponse, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_, inputFile_in_, quiet_in_, deleteFile_in_)
 	if err_ != nil {
 		return
 	}
-	reply_out_, _, err_ = receive()
+	reply_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m LoadImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ string, inputFile_in_ string, quiet_in_ bool, deleteFile_in_ bool) (func() (MoreResponse, uint64, error), error) {
+func (m LoadImage_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string, inputFile_in_ string, quiet_in_ bool, deleteFile_in_ bool) (func(ctx context.Context) (MoreResponse, uint64, error), error) {
 	var in struct {
 		Name       string `json:"name"`
 		InputFile  string `json:"inputFile"`
@@ -4577,15 +4578,15 @@ func (m LoadImage_methods) Send(c *varlink.Connection, flags uint64, name_in_ st
 	in.InputFile = inputFile_in_
 	in.Quiet = quiet_in_
 	in.DeleteFile = deleteFile_in_
-	receive, err := c.Send("io.podman.LoadImage", in, flags)
+	receive, err := c.Send(ctx, "io.podman.LoadImage", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (reply_out_ MoreResponse, flags uint64, err error) {
+	return func(context.Context) (reply_out_ MoreResponse, flags uint64, err error) {
 		var out struct {
 			Reply MoreResponse `json:"reply"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4600,16 +4601,16 @@ type GetEvents_methods struct{}
 
 func GetEvents() GetEvents_methods { return GetEvents_methods{} }
 
-func (m GetEvents_methods) Call(c *varlink.Connection, filter_in_ []string, since_in_ string, until_in_ string) (events_out_ Event, err_ error) {
-	receive, err_ := m.Send(c, 0, filter_in_, since_in_, until_in_)
+func (m GetEvents_methods) Call(ctx context.Context, c *varlink.Connection, filter_in_ []string, since_in_ string, until_in_ string) (events_out_ Event, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, filter_in_, since_in_, until_in_)
 	if err_ != nil {
 		return
 	}
-	events_out_, _, err_ = receive()
+	events_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetEvents_methods) Send(c *varlink.Connection, flags uint64, filter_in_ []string, since_in_ string, until_in_ string) (func() (Event, uint64, error), error) {
+func (m GetEvents_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, filter_in_ []string, since_in_ string, until_in_ string) (func(ctx context.Context) (Event, uint64, error), error) {
 	var in struct {
 		Filter []string `json:"filter"`
 		Since  string   `json:"since"`
@@ -4618,15 +4619,15 @@ func (m GetEvents_methods) Send(c *varlink.Connection, flags uint64, filter_in_ 
 	in.Filter = []string(filter_in_)
 	in.Since = since_in_
 	in.Until = until_in_
-	receive, err := c.Send("io.podman.GetEvents", in, flags)
+	receive, err := c.Send(ctx, "io.podman.GetEvents", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (events_out_ Event, flags uint64, err error) {
+	return func(context.Context) (events_out_ Event, flags uint64, err error) {
 		var out struct {
 			Events Event `json:"events"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4641,29 +4642,29 @@ type Diff_methods struct{}
 
 func Diff() Diff_methods { return Diff_methods{} }
 
-func (m Diff_methods) Call(c *varlink.Connection, name_in_ string) (diffs_out_ []DiffInfo, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m Diff_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (diffs_out_ []DiffInfo, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	diffs_out_, _, err_ = receive()
+	diffs_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m Diff_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() ([]DiffInfo, uint64, error), error) {
+func (m Diff_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) ([]DiffInfo, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.Diff", in, flags)
+	receive, err := c.Send(ctx, "io.podman.Diff", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (diffs_out_ []DiffInfo, flags uint64, err error) {
+	return func(context.Context) (diffs_out_ []DiffInfo, flags uint64, err error) {
 		var out struct {
 			Diffs []DiffInfo `json:"diffs"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4680,25 +4681,25 @@ func GetLayersMapWithImageInfo() GetLayersMapWithImageInfo_methods {
 	return GetLayersMapWithImageInfo_methods{}
 }
 
-func (m GetLayersMapWithImageInfo_methods) Call(c *varlink.Connection) (layerMap_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0)
+func (m GetLayersMapWithImageInfo_methods) Call(ctx context.Context, c *varlink.Connection) (layerMap_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0)
 	if err_ != nil {
 		return
 	}
-	layerMap_out_, _, err_ = receive()
+	layerMap_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m GetLayersMapWithImageInfo_methods) Send(c *varlink.Connection, flags uint64) (func() (string, uint64, error), error) {
-	receive, err := c.Send("io.podman.GetLayersMapWithImageInfo", nil, flags)
+func (m GetLayersMapWithImageInfo_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64) (func(ctx context.Context) (string, uint64, error), error) {
+	receive, err := c.Send(ctx, "io.podman.GetLayersMapWithImageInfo", nil, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (layerMap_out_ string, flags uint64, err error) {
+	return func(context.Context) (layerMap_out_ string, flags uint64, err error) {
 		var out struct {
 			LayerMap string `json:"layerMap"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4713,29 +4714,29 @@ type BuildImageHierarchyMap_methods struct{}
 
 func BuildImageHierarchyMap() BuildImageHierarchyMap_methods { return BuildImageHierarchyMap_methods{} }
 
-func (m BuildImageHierarchyMap_methods) Call(c *varlink.Connection, name_in_ string) (imageInfo_out_ string, err_ error) {
-	receive, err_ := m.Send(c, 0, name_in_)
+func (m BuildImageHierarchyMap_methods) Call(ctx context.Context, c *varlink.Connection, name_in_ string) (imageInfo_out_ string, err_ error) {
+	receive, err_ := m.Send(ctx, c, 0, name_in_)
 	if err_ != nil {
 		return
 	}
-	imageInfo_out_, _, err_ = receive()
+	imageInfo_out_, _, err_ = receive(ctx)
 	return
 }
 
-func (m BuildImageHierarchyMap_methods) Send(c *varlink.Connection, flags uint64, name_in_ string) (func() (string, uint64, error), error) {
+func (m BuildImageHierarchyMap_methods) Send(ctx context.Context, c *varlink.Connection, flags uint64, name_in_ string) (func(ctx context.Context) (string, uint64, error), error) {
 	var in struct {
 		Name string `json:"name"`
 	}
 	in.Name = name_in_
-	receive, err := c.Send("io.podman.BuildImageHierarchyMap", in, flags)
+	receive, err := c.Send(ctx, "io.podman.BuildImageHierarchyMap", in, flags)
 	if err != nil {
 		return nil, err
 	}
-	return func() (imageInfo_out_ string, flags uint64, err error) {
+	return func(context.Context) (imageInfo_out_ string, flags uint64, err error) {
 		var out struct {
 			ImageInfo string `json:"imageInfo"`
 		}
-		flags, err = receive(&out)
+		flags, err = receive(ctx, &out)
 		if err != nil {
 			err = Dispatch_Error(err)
 			return
@@ -4748,97 +4749,97 @@ func (m BuildImageHierarchyMap_methods) Send(c *varlink.Connection, flags uint64
 // Generated service interface with all methods
 
 type iopodmanInterface interface {
-	GetVersion(c VarlinkCall) error
-	GetInfo(c VarlinkCall) error
-	ListContainers(c VarlinkCall) error
-	Ps(c VarlinkCall, opts_ PsOpts) error
-	GetContainersByStatus(c VarlinkCall, status_ []string) error
-	Top(c VarlinkCall, nameOrID_ string, descriptors_ []string) error
-	HealthCheckRun(c VarlinkCall, nameOrID_ string) error
-	GetContainer(c VarlinkCall, id_ string) error
-	GetContainersByContext(c VarlinkCall, all_ bool, latest_ bool, args_ []string) error
-	CreateContainer(c VarlinkCall, create_ Create) error
-	InspectContainer(c VarlinkCall, name_ string) error
-	ListContainerProcesses(c VarlinkCall, name_ string, opts_ []string) error
-	GetContainerLogs(c VarlinkCall, name_ string) error
-	GetContainersLogs(c VarlinkCall, names_ []string, follow_ bool, latest_ bool, since_ string, tail_ int64, timestamps_ bool) error
-	ListContainerChanges(c VarlinkCall, name_ string) error
-	ExportContainer(c VarlinkCall, name_ string, path_ string) error
-	GetContainerStats(c VarlinkCall, name_ string) error
-	GetContainerStatsWithHistory(c VarlinkCall, previousStats_ ContainerStats) error
-	StartContainer(c VarlinkCall, name_ string) error
-	StopContainer(c VarlinkCall, name_ string, timeout_ int64) error
-	InitContainer(c VarlinkCall, name_ string) error
-	RestartContainer(c VarlinkCall, name_ string, timeout_ int64) error
-	KillContainer(c VarlinkCall, name_ string, signal_ int64) error
-	PauseContainer(c VarlinkCall, name_ string) error
-	UnpauseContainer(c VarlinkCall, name_ string) error
-	Attach(c VarlinkCall, name_ string, detachKeys_ string, start_ bool) error
-	AttachControl(c VarlinkCall, name_ string) error
-	GetAttachSockets(c VarlinkCall, name_ string) error
-	WaitContainer(c VarlinkCall, name_ string, interval_ int64) error
-	RemoveContainer(c VarlinkCall, name_ string, force_ bool, removeVolumes_ bool) error
-	EvictContainer(c VarlinkCall, name_ string, removeVolumes_ bool) error
-	DeleteStoppedContainers(c VarlinkCall) error
-	ListImages(c VarlinkCall) error
-	GetImage(c VarlinkCall, id_ string) error
-	BuildImage(c VarlinkCall, build_ BuildInfo) error
-	InspectImage(c VarlinkCall, name_ string) error
-	HistoryImage(c VarlinkCall, name_ string) error
-	PushImage(c VarlinkCall, name_ string, tag_ string, compress_ bool, format_ string, removeSignatures_ bool, signBy_ string) error
-	TagImage(c VarlinkCall, name_ string, tagged_ string) error
-	RemoveImage(c VarlinkCall, name_ string, force_ bool) error
-	SearchImages(c VarlinkCall, query_ string, limit_ *int64, filter_ ImageSearchFilter) error
-	DeleteUnusedImages(c VarlinkCall) error
-	Commit(c VarlinkCall, name_ string, image_name_ string, changes_ []string, author_ string, message_ string, pause_ bool, manifestType_ string) error
-	ImportImage(c VarlinkCall, source_ string, reference_ string, message_ string, changes_ []string, delete_ bool) error
-	ExportImage(c VarlinkCall, name_ string, destination_ string, compress_ bool, tags_ []string) error
-	PullImage(c VarlinkCall, name_ string) error
-	CreatePod(c VarlinkCall, create_ PodCreate) error
-	ListPods(c VarlinkCall) error
-	GetPod(c VarlinkCall, name_ string) error
-	InspectPod(c VarlinkCall, name_ string) error
-	StartPod(c VarlinkCall, name_ string) error
-	StopPod(c VarlinkCall, name_ string, timeout_ int64) error
-	RestartPod(c VarlinkCall, name_ string) error
-	KillPod(c VarlinkCall, name_ string, signal_ int64) error
-	PausePod(c VarlinkCall, name_ string) error
-	UnpausePod(c VarlinkCall, name_ string) error
-	RemovePod(c VarlinkCall, name_ string, force_ bool) error
-	TopPod(c VarlinkCall, pod_ string, latest_ bool, descriptors_ []string) error
-	GetPodStats(c VarlinkCall, name_ string) error
-	GetPodsByStatus(c VarlinkCall, statuses_ []string) error
-	ImageExists(c VarlinkCall, name_ string) error
-	ContainerExists(c VarlinkCall, name_ string) error
-	ContainerCheckpoint(c VarlinkCall, name_ string, keep_ bool, leaveRunning_ bool, tcpEstablished_ bool) error
-	ContainerRestore(c VarlinkCall, name_ string, keep_ bool, tcpEstablished_ bool) error
-	ContainerRunlabel(c VarlinkCall, runlabel_ Runlabel) error
-	ExecContainer(c VarlinkCall, opts_ ExecOpts) error
-	ListContainerMounts(c VarlinkCall) error
-	MountContainer(c VarlinkCall, name_ string) error
-	UnmountContainer(c VarlinkCall, name_ string, force_ bool) error
-	ImagesPrune(c VarlinkCall, all_ bool) error
-	GenerateKube(c VarlinkCall, name_ string, service_ bool) error
-	ContainerConfig(c VarlinkCall, name_ string) error
-	ContainerArtifacts(c VarlinkCall, name_ string, artifactName_ string) error
-	ContainerInspectData(c VarlinkCall, name_ string, size_ bool) error
-	ContainerStateData(c VarlinkCall, name_ string) error
-	PodStateData(c VarlinkCall, name_ string) error
-	CreateFromCC(c VarlinkCall, in_ []string) error
-	Spec(c VarlinkCall, name_ string) error
-	SendFile(c VarlinkCall, type_ string, length_ int64) error
-	ReceiveFile(c VarlinkCall, path_ string, delete_ bool) error
-	VolumeCreate(c VarlinkCall, options_ VolumeCreateOpts) error
-	VolumeRemove(c VarlinkCall, options_ VolumeRemoveOpts) error
-	GetVolumes(c VarlinkCall, args_ []string, all_ bool) error
-	VolumesPrune(c VarlinkCall) error
-	ImageSave(c VarlinkCall, options_ ImageSaveOptions) error
-	GetPodsByContext(c VarlinkCall, all_ bool, latest_ bool, args_ []string) error
-	LoadImage(c VarlinkCall, name_ string, inputFile_ string, quiet_ bool, deleteFile_ bool) error
-	GetEvents(c VarlinkCall, filter_ []string, since_ string, until_ string) error
-	Diff(c VarlinkCall, name_ string) error
-	GetLayersMapWithImageInfo(c VarlinkCall) error
-	BuildImageHierarchyMap(c VarlinkCall, name_ string) error
+	GetVersion(ctx context.Context, c VarlinkCall) error
+	GetInfo(ctx context.Context, c VarlinkCall) error
+	ListContainers(ctx context.Context, c VarlinkCall) error
+	Ps(ctx context.Context, c VarlinkCall, opts_ PsOpts) error
+	GetContainersByStatus(ctx context.Context, c VarlinkCall, status_ []string) error
+	Top(ctx context.Context, c VarlinkCall, nameOrID_ string, descriptors_ []string) error
+	HealthCheckRun(ctx context.Context, c VarlinkCall, nameOrID_ string) error
+	GetContainer(ctx context.Context, c VarlinkCall, id_ string) error
+	GetContainersByContext(ctx context.Context, c VarlinkCall, all_ bool, latest_ bool, args_ []string) error
+	CreateContainer(ctx context.Context, c VarlinkCall, create_ Create) error
+	InspectContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	ListContainerProcesses(ctx context.Context, c VarlinkCall, name_ string, opts_ []string) error
+	GetContainerLogs(ctx context.Context, c VarlinkCall, name_ string) error
+	GetContainersLogs(ctx context.Context, c VarlinkCall, names_ []string, follow_ bool, latest_ bool, since_ string, tail_ int64, timestamps_ bool) error
+	ListContainerChanges(ctx context.Context, c VarlinkCall, name_ string) error
+	ExportContainer(ctx context.Context, c VarlinkCall, name_ string, path_ string) error
+	GetContainerStats(ctx context.Context, c VarlinkCall, name_ string) error
+	GetContainerStatsWithHistory(ctx context.Context, c VarlinkCall, previousStats_ ContainerStats) error
+	StartContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	StopContainer(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error
+	InitContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	RestartContainer(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error
+	KillContainer(ctx context.Context, c VarlinkCall, name_ string, signal_ int64) error
+	PauseContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	UnpauseContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	Attach(ctx context.Context, c VarlinkCall, name_ string, detachKeys_ string, start_ bool) error
+	AttachControl(ctx context.Context, c VarlinkCall, name_ string) error
+	GetAttachSockets(ctx context.Context, c VarlinkCall, name_ string) error
+	WaitContainer(ctx context.Context, c VarlinkCall, name_ string, interval_ int64) error
+	RemoveContainer(ctx context.Context, c VarlinkCall, name_ string, force_ bool, removeVolumes_ bool) error
+	EvictContainer(ctx context.Context, c VarlinkCall, name_ string, removeVolumes_ bool) error
+	DeleteStoppedContainers(ctx context.Context, c VarlinkCall) error
+	ListImages(ctx context.Context, c VarlinkCall) error
+	GetImage(ctx context.Context, c VarlinkCall, id_ string) error
+	BuildImage(ctx context.Context, c VarlinkCall, build_ BuildInfo) error
+	InspectImage(ctx context.Context, c VarlinkCall, name_ string) error
+	HistoryImage(ctx context.Context, c VarlinkCall, name_ string) error
+	PushImage(ctx context.Context, c VarlinkCall, name_ string, tag_ string, compress_ bool, format_ string, removeSignatures_ bool, signBy_ string) error
+	TagImage(ctx context.Context, c VarlinkCall, name_ string, tagged_ string) error
+	RemoveImage(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error
+	SearchImages(ctx context.Context, c VarlinkCall, query_ string, limit_ *int64, filter_ ImageSearchFilter) error
+	DeleteUnusedImages(ctx context.Context, c VarlinkCall) error
+	Commit(ctx context.Context, c VarlinkCall, name_ string, image_name_ string, changes_ []string, author_ string, message_ string, pause_ bool, manifestType_ string) error
+	ImportImage(ctx context.Context, c VarlinkCall, source_ string, reference_ string, message_ string, changes_ []string, delete_ bool) error
+	ExportImage(ctx context.Context, c VarlinkCall, name_ string, destination_ string, compress_ bool, tags_ []string) error
+	PullImage(ctx context.Context, c VarlinkCall, name_ string) error
+	CreatePod(ctx context.Context, c VarlinkCall, create_ PodCreate) error
+	ListPods(ctx context.Context, c VarlinkCall) error
+	GetPod(ctx context.Context, c VarlinkCall, name_ string) error
+	InspectPod(ctx context.Context, c VarlinkCall, name_ string) error
+	StartPod(ctx context.Context, c VarlinkCall, name_ string) error
+	StopPod(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error
+	RestartPod(ctx context.Context, c VarlinkCall, name_ string) error
+	KillPod(ctx context.Context, c VarlinkCall, name_ string, signal_ int64) error
+	PausePod(ctx context.Context, c VarlinkCall, name_ string) error
+	UnpausePod(ctx context.Context, c VarlinkCall, name_ string) error
+	RemovePod(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error
+	TopPod(ctx context.Context, c VarlinkCall, pod_ string, latest_ bool, descriptors_ []string) error
+	GetPodStats(ctx context.Context, c VarlinkCall, name_ string) error
+	GetPodsByStatus(ctx context.Context, c VarlinkCall, statuses_ []string) error
+	ImageExists(ctx context.Context, c VarlinkCall, name_ string) error
+	ContainerExists(ctx context.Context, c VarlinkCall, name_ string) error
+	ContainerCheckpoint(ctx context.Context, c VarlinkCall, name_ string, keep_ bool, leaveRunning_ bool, tcpEstablished_ bool) error
+	ContainerRestore(ctx context.Context, c VarlinkCall, name_ string, keep_ bool, tcpEstablished_ bool) error
+	ContainerRunlabel(ctx context.Context, c VarlinkCall, runlabel_ Runlabel) error
+	ExecContainer(ctx context.Context, c VarlinkCall, opts_ ExecOpts) error
+	ListContainerMounts(ctx context.Context, c VarlinkCall) error
+	MountContainer(ctx context.Context, c VarlinkCall, name_ string) error
+	UnmountContainer(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error
+	ImagesPrune(ctx context.Context, c VarlinkCall, all_ bool) error
+	GenerateKube(ctx context.Context, c VarlinkCall, name_ string, service_ bool) error
+	ContainerConfig(ctx context.Context, c VarlinkCall, name_ string) error
+	ContainerArtifacts(ctx context.Context, c VarlinkCall, name_ string, artifactName_ string) error
+	ContainerInspectData(ctx context.Context, c VarlinkCall, name_ string, size_ bool) error
+	ContainerStateData(ctx context.Context, c VarlinkCall, name_ string) error
+	PodStateData(ctx context.Context, c VarlinkCall, name_ string) error
+	CreateFromCC(ctx context.Context, c VarlinkCall, in_ []string) error
+	Spec(ctx context.Context, c VarlinkCall, name_ string) error
+	SendFile(ctx context.Context, c VarlinkCall, type_ string, length_ int64) error
+	ReceiveFile(ctx context.Context, c VarlinkCall, path_ string, delete_ bool) error
+	VolumeCreate(ctx context.Context, c VarlinkCall, options_ VolumeCreateOpts) error
+	VolumeRemove(ctx context.Context, c VarlinkCall, options_ VolumeRemoveOpts) error
+	GetVolumes(ctx context.Context, c VarlinkCall, args_ []string, all_ bool) error
+	VolumesPrune(ctx context.Context, c VarlinkCall) error
+	ImageSave(ctx context.Context, c VarlinkCall, options_ ImageSaveOptions) error
+	GetPodsByContext(ctx context.Context, c VarlinkCall, all_ bool, latest_ bool, args_ []string) error
+	LoadImage(ctx context.Context, c VarlinkCall, name_ string, inputFile_ string, quiet_ bool, deleteFile_ bool) error
+	GetEvents(ctx context.Context, c VarlinkCall, filter_ []string, since_ string, until_ string) error
+	Diff(ctx context.Context, c VarlinkCall, name_ string) error
+	GetLayersMapWithImageInfo(ctx context.Context, c VarlinkCall) error
+	BuildImageHierarchyMap(ctx context.Context, c VarlinkCall, name_ string) error
 }
 
 // Generated service object with all methods
@@ -4848,107 +4849,107 @@ type VarlinkCall struct{ varlink.Call }
 // Generated reply methods for all varlink errors
 
 // ImageNotFound means the image could not be found by the provided name or ID in local storage.
-func (c *VarlinkCall) ReplyImageNotFound(id_ string, reason_ string) error {
+func (c *VarlinkCall) ReplyImageNotFound(ctx context.Context, id_ string, reason_ string) error {
 	var out ImageNotFound
 	out.Id = id_
 	out.Reason = reason_
-	return c.ReplyError("io.podman.ImageNotFound", &out)
+	return c.ReplyError(ctx, "io.podman.ImageNotFound", &out)
 }
 
 // ContainerNotFound means the container could not be found by the provided name or ID in local storage.
-func (c *VarlinkCall) ReplyContainerNotFound(id_ string, reason_ string) error {
+func (c *VarlinkCall) ReplyContainerNotFound(ctx context.Context, id_ string, reason_ string) error {
 	var out ContainerNotFound
 	out.Id = id_
 	out.Reason = reason_
-	return c.ReplyError("io.podman.ContainerNotFound", &out)
+	return c.ReplyError(ctx, "io.podman.ContainerNotFound", &out)
 }
 
 // NoContainerRunning means none of the containers requested are running in a command that requires a running container.
-func (c *VarlinkCall) ReplyNoContainerRunning() error {
+func (c *VarlinkCall) ReplyNoContainerRunning(ctx context.Context) error {
 	var out NoContainerRunning
-	return c.ReplyError("io.podman.NoContainerRunning", &out)
+	return c.ReplyError(ctx, "io.podman.NoContainerRunning", &out)
 }
 
 // PodNotFound means the pod could not be found by the provided name or ID in local storage.
-func (c *VarlinkCall) ReplyPodNotFound(name_ string, reason_ string) error {
+func (c *VarlinkCall) ReplyPodNotFound(ctx context.Context, name_ string, reason_ string) error {
 	var out PodNotFound
 	out.Name = name_
 	out.Reason = reason_
-	return c.ReplyError("io.podman.PodNotFound", &out)
+	return c.ReplyError(ctx, "io.podman.PodNotFound", &out)
 }
 
 // VolumeNotFound means the volume could not be found by the name or ID in local storage.
-func (c *VarlinkCall) ReplyVolumeNotFound(id_ string, reason_ string) error {
+func (c *VarlinkCall) ReplyVolumeNotFound(ctx context.Context, id_ string, reason_ string) error {
 	var out VolumeNotFound
 	out.Id = id_
 	out.Reason = reason_
-	return c.ReplyError("io.podman.VolumeNotFound", &out)
+	return c.ReplyError(ctx, "io.podman.VolumeNotFound", &out)
 }
 
 // PodContainerError means a container associated with a pod failed to perform an operation. It contains
 // a container ID of the container that failed.
-func (c *VarlinkCall) ReplyPodContainerError(podname_ string, errors_ []PodContainerErrorData) error {
+func (c *VarlinkCall) ReplyPodContainerError(ctx context.Context, podname_ string, errors_ []PodContainerErrorData) error {
 	var out PodContainerError
 	out.Podname = podname_
 	out.Errors = []PodContainerErrorData(errors_)
-	return c.ReplyError("io.podman.PodContainerError", &out)
+	return c.ReplyError(ctx, "io.podman.PodContainerError", &out)
 }
 
 // NoContainersInPod means a pod has no containers on which to perform the operation. It contains
 // the pod ID.
-func (c *VarlinkCall) ReplyNoContainersInPod(name_ string) error {
+func (c *VarlinkCall) ReplyNoContainersInPod(ctx context.Context, name_ string) error {
 	var out NoContainersInPod
 	out.Name = name_
-	return c.ReplyError("io.podman.NoContainersInPod", &out)
+	return c.ReplyError(ctx, "io.podman.NoContainersInPod", &out)
 }
 
 // InvalidState indicates that a container or pod was in an improper state for the requested operation
-func (c *VarlinkCall) ReplyInvalidState(id_ string, reason_ string) error {
+func (c *VarlinkCall) ReplyInvalidState(ctx context.Context, id_ string, reason_ string) error {
 	var out InvalidState
 	out.Id = id_
 	out.Reason = reason_
-	return c.ReplyError("io.podman.InvalidState", &out)
+	return c.ReplyError(ctx, "io.podman.InvalidState", &out)
 }
 
 // ErrorOccurred is a generic error for an error that occurs during the execution.  The actual error message
 // is includes as part of the error's text.
-func (c *VarlinkCall) ReplyErrorOccurred(reason_ string) error {
+func (c *VarlinkCall) ReplyErrorOccurred(ctx context.Context, reason_ string) error {
 	var out ErrorOccurred
 	out.Reason = reason_
-	return c.ReplyError("io.podman.ErrorOccurred", &out)
+	return c.ReplyError(ctx, "io.podman.ErrorOccurred", &out)
 }
 
 // RuntimeErrors generally means a runtime could not be found or gotten.
-func (c *VarlinkCall) ReplyRuntimeError(reason_ string) error {
+func (c *VarlinkCall) ReplyRuntimeError(ctx context.Context, reason_ string) error {
 	var out RuntimeError
 	out.Reason = reason_
-	return c.ReplyError("io.podman.RuntimeError", &out)
+	return c.ReplyError(ctx, "io.podman.RuntimeError", &out)
 }
 
 // The Podman endpoint requires that you use a streaming connection.
-func (c *VarlinkCall) ReplyWantsMoreRequired(reason_ string) error {
+func (c *VarlinkCall) ReplyWantsMoreRequired(ctx context.Context, reason_ string) error {
 	var out WantsMoreRequired
 	out.Reason = reason_
-	return c.ReplyError("io.podman.WantsMoreRequired", &out)
+	return c.ReplyError(ctx, "io.podman.WantsMoreRequired", &out)
 }
 
 // Container is already stopped
-func (c *VarlinkCall) ReplyErrCtrStopped(id_ string) error {
+func (c *VarlinkCall) ReplyErrCtrStopped(ctx context.Context, id_ string) error {
 	var out ErrCtrStopped
 	out.Id = id_
-	return c.ReplyError("io.podman.ErrCtrStopped", &out)
+	return c.ReplyError(ctx, "io.podman.ErrCtrStopped", &out)
 }
 
 // This function requires CGroupsV2 to run in rootless mode.
-func (c *VarlinkCall) ReplyErrRequiresCgroupsV2ForRootless(reason_ string) error {
+func (c *VarlinkCall) ReplyErrRequiresCgroupsV2ForRootless(ctx context.Context, reason_ string) error {
 	var out ErrRequiresCgroupsV2ForRootless
 	out.Reason = reason_
-	return c.ReplyError("io.podman.ErrRequiresCgroupsV2ForRootless", &out)
+	return c.ReplyError(ctx, "io.podman.ErrRequiresCgroupsV2ForRootless", &out)
 }
 
 // Generated reply methods for all varlink methods
 
-func (c *VarlinkCall) ReplyGetVersion(version_ string, go_version_ string, git_commit_ string, built_ string, os_arch_ string, remote_api_version_ int64) error {
+func (c *VarlinkCall) ReplyGetVersion(ctx context.Context, version_ string, go_version_ string, git_commit_ string, built_ string, os_arch_ string, remote_api_version_ int64) error {
 	var out struct {
 		Version            string `json:"version"`
 		Go_version         string `json:"go_version"`
@@ -4963,777 +4964,777 @@ func (c *VarlinkCall) ReplyGetVersion(version_ string, go_version_ string, git_c
 	out.Built = built_
 	out.Os_arch = os_arch_
 	out.Remote_api_version = remote_api_version_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetInfo(info_ PodmanInfo) error {
+func (c *VarlinkCall) ReplyGetInfo(ctx context.Context, info_ PodmanInfo) error {
 	var out struct {
 		Info PodmanInfo `json:"info"`
 	}
 	out.Info = info_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyListContainers(containers_ []Container) error {
+func (c *VarlinkCall) ReplyListContainers(ctx context.Context, containers_ []Container) error {
 	var out struct {
 		Containers []Container `json:"containers"`
 	}
 	out.Containers = []Container(containers_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPs(containers_ []PsContainer) error {
+func (c *VarlinkCall) ReplyPs(ctx context.Context, containers_ []PsContainer) error {
 	var out struct {
 		Containers []PsContainer `json:"containers"`
 	}
 	out.Containers = []PsContainer(containers_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainersByStatus(containerS_ []Container) error {
+func (c *VarlinkCall) ReplyGetContainersByStatus(ctx context.Context, containerS_ []Container) error {
 	var out struct {
 		ContainerS []Container `json:"containerS"`
 	}
 	out.ContainerS = []Container(containerS_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyTop(top_ []string) error {
+func (c *VarlinkCall) ReplyTop(ctx context.Context, top_ []string) error {
 	var out struct {
 		Top []string `json:"top"`
 	}
 	out.Top = []string(top_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyHealthCheckRun(healthCheckStatus_ string) error {
+func (c *VarlinkCall) ReplyHealthCheckRun(ctx context.Context, healthCheckStatus_ string) error {
 	var out struct {
 		HealthCheckStatus string `json:"healthCheckStatus"`
 	}
 	out.HealthCheckStatus = healthCheckStatus_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainer(container_ Container) error {
+func (c *VarlinkCall) ReplyGetContainer(ctx context.Context, container_ Container) error {
 	var out struct {
 		Container Container `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainersByContext(containers_ []string) error {
+func (c *VarlinkCall) ReplyGetContainersByContext(ctx context.Context, containers_ []string) error {
 	var out struct {
 		Containers []string `json:"containers"`
 	}
 	out.Containers = []string(containers_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyCreateContainer(container_ string) error {
+func (c *VarlinkCall) ReplyCreateContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyInspectContainer(container_ string) error {
+func (c *VarlinkCall) ReplyInspectContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyListContainerProcesses(container_ []string) error {
+func (c *VarlinkCall) ReplyListContainerProcesses(ctx context.Context, container_ []string) error {
 	var out struct {
 		Container []string `json:"container"`
 	}
 	out.Container = []string(container_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainerLogs(container_ []string) error {
+func (c *VarlinkCall) ReplyGetContainerLogs(ctx context.Context, container_ []string) error {
 	var out struct {
 		Container []string `json:"container"`
 	}
 	out.Container = []string(container_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainersLogs(log_ LogLine) error {
+func (c *VarlinkCall) ReplyGetContainersLogs(ctx context.Context, log_ LogLine) error {
 	var out struct {
 		Log LogLine `json:"log"`
 	}
 	out.Log = log_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyListContainerChanges(container_ ContainerChanges) error {
+func (c *VarlinkCall) ReplyListContainerChanges(ctx context.Context, container_ ContainerChanges) error {
 	var out struct {
 		Container ContainerChanges `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyExportContainer(tarfile_ string) error {
+func (c *VarlinkCall) ReplyExportContainer(ctx context.Context, tarfile_ string) error {
 	var out struct {
 		Tarfile string `json:"tarfile"`
 	}
 	out.Tarfile = tarfile_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainerStats(container_ ContainerStats) error {
+func (c *VarlinkCall) ReplyGetContainerStats(ctx context.Context, container_ ContainerStats) error {
 	var out struct {
 		Container ContainerStats `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetContainerStatsWithHistory(container_ ContainerStats) error {
+func (c *VarlinkCall) ReplyGetContainerStatsWithHistory(ctx context.Context, container_ ContainerStats) error {
 	var out struct {
 		Container ContainerStats `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyStartContainer(container_ string) error {
+func (c *VarlinkCall) ReplyStartContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyStopContainer(container_ string) error {
+func (c *VarlinkCall) ReplyStopContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyInitContainer(container_ string) error {
+func (c *VarlinkCall) ReplyInitContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyRestartContainer(container_ string) error {
+func (c *VarlinkCall) ReplyRestartContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyKillContainer(container_ string) error {
+func (c *VarlinkCall) ReplyKillContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPauseContainer(container_ string) error {
+func (c *VarlinkCall) ReplyPauseContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyUnpauseContainer(container_ string) error {
+func (c *VarlinkCall) ReplyUnpauseContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyAttach() error {
-	return c.Reply(nil)
+func (c *VarlinkCall) ReplyAttach(ctx context.Context) error {
+	return c.Reply(ctx, nil)
 }
 
-func (c *VarlinkCall) ReplyAttachControl() error {
-	return c.Reply(nil)
+func (c *VarlinkCall) ReplyAttachControl(ctx context.Context) error {
+	return c.Reply(ctx, nil)
 }
 
-func (c *VarlinkCall) ReplyGetAttachSockets(sockets_ Sockets) error {
+func (c *VarlinkCall) ReplyGetAttachSockets(ctx context.Context, sockets_ Sockets) error {
 	var out struct {
 		Sockets Sockets `json:"sockets"`
 	}
 	out.Sockets = sockets_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyWaitContainer(exitcode_ int64) error {
+func (c *VarlinkCall) ReplyWaitContainer(ctx context.Context, exitcode_ int64) error {
 	var out struct {
 		Exitcode int64 `json:"exitcode"`
 	}
 	out.Exitcode = exitcode_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyRemoveContainer(container_ string) error {
+func (c *VarlinkCall) ReplyRemoveContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyEvictContainer(container_ string) error {
+func (c *VarlinkCall) ReplyEvictContainer(ctx context.Context, container_ string) error {
 	var out struct {
 		Container string `json:"container"`
 	}
 	out.Container = container_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyDeleteStoppedContainers(containers_ []string) error {
+func (c *VarlinkCall) ReplyDeleteStoppedContainers(ctx context.Context, containers_ []string) error {
 	var out struct {
 		Containers []string `json:"containers"`
 	}
 	out.Containers = []string(containers_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyListImages(images_ []Image) error {
+func (c *VarlinkCall) ReplyListImages(ctx context.Context, images_ []Image) error {
 	var out struct {
 		Images []Image `json:"images"`
 	}
 	out.Images = []Image(images_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetImage(image_ Image) error {
+func (c *VarlinkCall) ReplyGetImage(ctx context.Context, image_ Image) error {
 	var out struct {
 		Image Image `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyBuildImage(image_ MoreResponse) error {
+func (c *VarlinkCall) ReplyBuildImage(ctx context.Context, image_ MoreResponse) error {
 	var out struct {
 		Image MoreResponse `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyInspectImage(image_ string) error {
+func (c *VarlinkCall) ReplyInspectImage(ctx context.Context, image_ string) error {
 	var out struct {
 		Image string `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyHistoryImage(history_ []ImageHistory) error {
+func (c *VarlinkCall) ReplyHistoryImage(ctx context.Context, history_ []ImageHistory) error {
 	var out struct {
 		History []ImageHistory `json:"history"`
 	}
 	out.History = []ImageHistory(history_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPushImage(reply_ MoreResponse) error {
+func (c *VarlinkCall) ReplyPushImage(ctx context.Context, reply_ MoreResponse) error {
 	var out struct {
 		Reply MoreResponse `json:"reply"`
 	}
 	out.Reply = reply_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyTagImage(image_ string) error {
+func (c *VarlinkCall) ReplyTagImage(ctx context.Context, image_ string) error {
 	var out struct {
 		Image string `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyRemoveImage(image_ string) error {
+func (c *VarlinkCall) ReplyRemoveImage(ctx context.Context, image_ string) error {
 	var out struct {
 		Image string `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplySearchImages(results_ []ImageSearchResult) error {
+func (c *VarlinkCall) ReplySearchImages(ctx context.Context, results_ []ImageSearchResult) error {
 	var out struct {
 		Results []ImageSearchResult `json:"results"`
 	}
 	out.Results = []ImageSearchResult(results_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyDeleteUnusedImages(images_ []string) error {
+func (c *VarlinkCall) ReplyDeleteUnusedImages(ctx context.Context, images_ []string) error {
 	var out struct {
 		Images []string `json:"images"`
 	}
 	out.Images = []string(images_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyCommit(reply_ MoreResponse) error {
+func (c *VarlinkCall) ReplyCommit(ctx context.Context, reply_ MoreResponse) error {
 	var out struct {
 		Reply MoreResponse `json:"reply"`
 	}
 	out.Reply = reply_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyImportImage(image_ string) error {
+func (c *VarlinkCall) ReplyImportImage(ctx context.Context, image_ string) error {
 	var out struct {
 		Image string `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyExportImage(image_ string) error {
+func (c *VarlinkCall) ReplyExportImage(ctx context.Context, image_ string) error {
 	var out struct {
 		Image string `json:"image"`
 	}
 	out.Image = image_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPullImage(reply_ MoreResponse) error {
+func (c *VarlinkCall) ReplyPullImage(ctx context.Context, reply_ MoreResponse) error {
 	var out struct {
 		Reply MoreResponse `json:"reply"`
 	}
 	out.Reply = reply_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyCreatePod(pod_ string) error {
+func (c *VarlinkCall) ReplyCreatePod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyListPods(pods_ []ListPodData) error {
+func (c *VarlinkCall) ReplyListPods(ctx context.Context, pods_ []ListPodData) error {
 	var out struct {
 		Pods []ListPodData `json:"pods"`
 	}
 	out.Pods = []ListPodData(pods_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetPod(pod_ ListPodData) error {
+func (c *VarlinkCall) ReplyGetPod(ctx context.Context, pod_ ListPodData) error {
 	var out struct {
 		Pod ListPodData `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyInspectPod(pod_ string) error {
+func (c *VarlinkCall) ReplyInspectPod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyStartPod(pod_ string) error {
+func (c *VarlinkCall) ReplyStartPod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyStopPod(pod_ string) error {
+func (c *VarlinkCall) ReplyStopPod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyRestartPod(pod_ string) error {
+func (c *VarlinkCall) ReplyRestartPod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyKillPod(pod_ string) error {
+func (c *VarlinkCall) ReplyKillPod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPausePod(pod_ string) error {
+func (c *VarlinkCall) ReplyPausePod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyUnpausePod(pod_ string) error {
+func (c *VarlinkCall) ReplyUnpausePod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyRemovePod(pod_ string) error {
+func (c *VarlinkCall) ReplyRemovePod(ctx context.Context, pod_ string) error {
 	var out struct {
 		Pod string `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyTopPod(stats_ []string) error {
+func (c *VarlinkCall) ReplyTopPod(ctx context.Context, stats_ []string) error {
 	var out struct {
 		Stats []string `json:"stats"`
 	}
 	out.Stats = []string(stats_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetPodStats(pod_ string, containers_ []ContainerStats) error {
+func (c *VarlinkCall) ReplyGetPodStats(ctx context.Context, pod_ string, containers_ []ContainerStats) error {
 	var out struct {
 		Pod        string           `json:"pod"`
 		Containers []ContainerStats `json:"containers"`
 	}
 	out.Pod = pod_
 	out.Containers = []ContainerStats(containers_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetPodsByStatus(pods_ []string) error {
+func (c *VarlinkCall) ReplyGetPodsByStatus(ctx context.Context, pods_ []string) error {
 	var out struct {
 		Pods []string `json:"pods"`
 	}
 	out.Pods = []string(pods_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyImageExists(exists_ int64) error {
+func (c *VarlinkCall) ReplyImageExists(ctx context.Context, exists_ int64) error {
 	var out struct {
 		Exists int64 `json:"exists"`
 	}
 	out.Exists = exists_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerExists(exists_ int64) error {
+func (c *VarlinkCall) ReplyContainerExists(ctx context.Context, exists_ int64) error {
 	var out struct {
 		Exists int64 `json:"exists"`
 	}
 	out.Exists = exists_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerCheckpoint(id_ string) error {
+func (c *VarlinkCall) ReplyContainerCheckpoint(ctx context.Context, id_ string) error {
 	var out struct {
 		Id string `json:"id"`
 	}
 	out.Id = id_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerRestore(id_ string) error {
+func (c *VarlinkCall) ReplyContainerRestore(ctx context.Context, id_ string) error {
 	var out struct {
 		Id string `json:"id"`
 	}
 	out.Id = id_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerRunlabel() error {
-	return c.Reply(nil)
+func (c *VarlinkCall) ReplyContainerRunlabel(ctx context.Context) error {
+	return c.Reply(ctx, nil)
 }
 
-func (c *VarlinkCall) ReplyExecContainer() error {
-	return c.Reply(nil)
+func (c *VarlinkCall) ReplyExecContainer(ctx context.Context) error {
+	return c.Reply(ctx, nil)
 }
 
-func (c *VarlinkCall) ReplyListContainerMounts(mounts_ map[string]string) error {
+func (c *VarlinkCall) ReplyListContainerMounts(ctx context.Context, mounts_ map[string]string) error {
 	var out struct {
 		Mounts map[string]string `json:"mounts"`
 	}
 	out.Mounts = map[string]string(mounts_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyMountContainer(path_ string) error {
+func (c *VarlinkCall) ReplyMountContainer(ctx context.Context, path_ string) error {
 	var out struct {
 		Path string `json:"path"`
 	}
 	out.Path = path_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyUnmountContainer() error {
-	return c.Reply(nil)
+func (c *VarlinkCall) ReplyUnmountContainer(ctx context.Context) error {
+	return c.Reply(ctx, nil)
 }
 
-func (c *VarlinkCall) ReplyImagesPrune(pruned_ []string) error {
+func (c *VarlinkCall) ReplyImagesPrune(ctx context.Context, pruned_ []string) error {
 	var out struct {
 		Pruned []string `json:"pruned"`
 	}
 	out.Pruned = []string(pruned_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGenerateKube(pod_ KubePodService) error {
+func (c *VarlinkCall) ReplyGenerateKube(ctx context.Context, pod_ KubePodService) error {
 	var out struct {
 		Pod KubePodService `json:"pod"`
 	}
 	out.Pod = pod_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerConfig(config_ string) error {
+func (c *VarlinkCall) ReplyContainerConfig(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerArtifacts(config_ string) error {
+func (c *VarlinkCall) ReplyContainerArtifacts(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerInspectData(config_ string) error {
+func (c *VarlinkCall) ReplyContainerInspectData(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyContainerStateData(config_ string) error {
+func (c *VarlinkCall) ReplyContainerStateData(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyPodStateData(config_ string) error {
+func (c *VarlinkCall) ReplyPodStateData(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyCreateFromCC(id_ string) error {
+func (c *VarlinkCall) ReplyCreateFromCC(ctx context.Context, id_ string) error {
 	var out struct {
 		Id string `json:"id"`
 	}
 	out.Id = id_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplySpec(config_ string) error {
+func (c *VarlinkCall) ReplySpec(ctx context.Context, config_ string) error {
 	var out struct {
 		Config string `json:"config"`
 	}
 	out.Config = config_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplySendFile(file_handle_ string) error {
+func (c *VarlinkCall) ReplySendFile(ctx context.Context, file_handle_ string) error {
 	var out struct {
 		File_handle string `json:"file_handle"`
 	}
 	out.File_handle = file_handle_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyReceiveFile(len_ int64) error {
+func (c *VarlinkCall) ReplyReceiveFile(ctx context.Context, len_ int64) error {
 	var out struct {
 		Len int64 `json:"len"`
 	}
 	out.Len = len_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyVolumeCreate(volumeName_ string) error {
+func (c *VarlinkCall) ReplyVolumeCreate(ctx context.Context, volumeName_ string) error {
 	var out struct {
 		VolumeName string `json:"volumeName"`
 	}
 	out.VolumeName = volumeName_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyVolumeRemove(successes_ []string, failures_ map[string]string) error {
+func (c *VarlinkCall) ReplyVolumeRemove(ctx context.Context, successes_ []string, failures_ map[string]string) error {
 	var out struct {
 		Successes []string          `json:"successes"`
 		Failures  map[string]string `json:"failures"`
 	}
 	out.Successes = []string(successes_)
 	out.Failures = map[string]string(failures_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetVolumes(volumes_ []Volume) error {
+func (c *VarlinkCall) ReplyGetVolumes(ctx context.Context, volumes_ []Volume) error {
 	var out struct {
 		Volumes []Volume `json:"volumes"`
 	}
 	out.Volumes = []Volume(volumes_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyVolumesPrune(prunedNames_ []string, prunedErrors_ []string) error {
+func (c *VarlinkCall) ReplyVolumesPrune(ctx context.Context, prunedNames_ []string, prunedErrors_ []string) error {
 	var out struct {
 		PrunedNames  []string `json:"prunedNames"`
 		PrunedErrors []string `json:"prunedErrors"`
 	}
 	out.PrunedNames = []string(prunedNames_)
 	out.PrunedErrors = []string(prunedErrors_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyImageSave(reply_ MoreResponse) error {
+func (c *VarlinkCall) ReplyImageSave(ctx context.Context, reply_ MoreResponse) error {
 	var out struct {
 		Reply MoreResponse `json:"reply"`
 	}
 	out.Reply = reply_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetPodsByContext(pods_ []string) error {
+func (c *VarlinkCall) ReplyGetPodsByContext(ctx context.Context, pods_ []string) error {
 	var out struct {
 		Pods []string `json:"pods"`
 	}
 	out.Pods = []string(pods_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyLoadImage(reply_ MoreResponse) error {
+func (c *VarlinkCall) ReplyLoadImage(ctx context.Context, reply_ MoreResponse) error {
 	var out struct {
 		Reply MoreResponse `json:"reply"`
 	}
 	out.Reply = reply_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetEvents(events_ Event) error {
+func (c *VarlinkCall) ReplyGetEvents(ctx context.Context, events_ Event) error {
 	var out struct {
 		Events Event `json:"events"`
 	}
 	out.Events = events_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyDiff(diffs_ []DiffInfo) error {
+func (c *VarlinkCall) ReplyDiff(ctx context.Context, diffs_ []DiffInfo) error {
 	var out struct {
 		Diffs []DiffInfo `json:"diffs"`
 	}
 	out.Diffs = []DiffInfo(diffs_)
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyGetLayersMapWithImageInfo(layerMap_ string) error {
+func (c *VarlinkCall) ReplyGetLayersMapWithImageInfo(ctx context.Context, layerMap_ string) error {
 	var out struct {
 		LayerMap string `json:"layerMap"`
 	}
 	out.LayerMap = layerMap_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
-func (c *VarlinkCall) ReplyBuildImageHierarchyMap(imageInfo_ string) error {
+func (c *VarlinkCall) ReplyBuildImageHierarchyMap(ctx context.Context, imageInfo_ string) error {
 	var out struct {
 		ImageInfo string `json:"imageInfo"`
 	}
 	out.ImageInfo = imageInfo_
-	return c.Reply(&out)
+	return c.Reply(ctx, &out)
 }
 
 // Generated dummy implementations for all varlink methods
 
 // GetVersion returns version and build information of the podman service
-func (s *VarlinkInterface) GetVersion(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetVersion")
+func (s *VarlinkInterface) GetVersion(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetVersion")
 }
 
 // GetInfo returns a [PodmanInfo](#PodmanInfo) struct that describes podman and its host such as storage stats,
 // build information of Podman, and system-wide registries.
-func (s *VarlinkInterface) GetInfo(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetInfo")
+func (s *VarlinkInterface) GetInfo(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetInfo")
 }
 
 // ListContainers returns information about all containers.
 // See also [GetContainer](#GetContainer).
-func (s *VarlinkInterface) ListContainers(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListContainers")
+func (s *VarlinkInterface) ListContainers(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListContainers")
 }
 
-func (s *VarlinkInterface) Ps(c VarlinkCall, opts_ PsOpts) error {
-	return c.ReplyMethodNotImplemented("io.podman.Ps")
+func (s *VarlinkInterface) Ps(ctx context.Context, c VarlinkCall, opts_ PsOpts) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Ps")
 }
 
-func (s *VarlinkInterface) GetContainersByStatus(c VarlinkCall, status_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainersByStatus")
+func (s *VarlinkInterface) GetContainersByStatus(ctx context.Context, c VarlinkCall, status_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainersByStatus")
 }
 
-func (s *VarlinkInterface) Top(c VarlinkCall, nameOrID_ string, descriptors_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.Top")
+func (s *VarlinkInterface) Top(ctx context.Context, c VarlinkCall, nameOrID_ string, descriptors_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Top")
 }
 
 // HealthCheckRun executes defined container's healthcheck command
 // and returns the container's health status.
-func (s *VarlinkInterface) HealthCheckRun(c VarlinkCall, nameOrID_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.HealthCheckRun")
+func (s *VarlinkInterface) HealthCheckRun(ctx context.Context, c VarlinkCall, nameOrID_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.HealthCheckRun")
 }
 
 // GetContainer returns information about a single container.  If a container
 // with the given id doesn't exist, a [ContainerNotFound](#ContainerNotFound)
 // error will be returned.  See also [ListContainers](ListContainers) and
 // [InspectContainer](#InspectContainer).
-func (s *VarlinkInterface) GetContainer(c VarlinkCall, id_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainer")
+func (s *VarlinkInterface) GetContainer(ctx context.Context, c VarlinkCall, id_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainer")
 }
 
 // GetContainersByContext allows you to get a list of container ids depending on all, latest, or a list of
 // container names.  The definition of latest container means the latest by creation date.  In a multi-
 // user environment, results might differ from what you expect.
-func (s *VarlinkInterface) GetContainersByContext(c VarlinkCall, all_ bool, latest_ bool, args_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainersByContext")
+func (s *VarlinkInterface) GetContainersByContext(ctx context.Context, c VarlinkCall, all_ bool, latest_ bool, args_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainersByContext")
 }
 
 // CreateContainer creates a new container from an image.  It uses a [Create](#Create) type for input.
-func (s *VarlinkInterface) CreateContainer(c VarlinkCall, create_ Create) error {
-	return c.ReplyMethodNotImplemented("io.podman.CreateContainer")
+func (s *VarlinkInterface) CreateContainer(ctx context.Context, c VarlinkCall, create_ Create) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.CreateContainer")
 }
 
 // InspectContainer data takes a name or ID of a container returns the inspection
 // data in string format.  You can then serialize the string into JSON.  A [ContainerNotFound](#ContainerNotFound)
 // error will be returned if the container cannot be found. See also [InspectImage](#InspectImage).
-func (s *VarlinkInterface) InspectContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.InspectContainer")
+func (s *VarlinkInterface) InspectContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.InspectContainer")
 }
 
 // ListContainerProcesses takes a name or ID of a container and returns the processes
@@ -5752,26 +5753,26 @@ func (s *VarlinkInterface) InspectContainer(c VarlinkCall, name_ string) error {
 //   ]
 // }
 // ~~~
-func (s *VarlinkInterface) ListContainerProcesses(c VarlinkCall, name_ string, opts_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListContainerProcesses")
+func (s *VarlinkInterface) ListContainerProcesses(ctx context.Context, c VarlinkCall, name_ string, opts_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListContainerProcesses")
 }
 
 // GetContainerLogs takes a name or ID of a container and returns the logs of that container.
 // If the container cannot be found, a [ContainerNotFound](#ContainerNotFound) error will be returned.
 // The container logs are returned as an array of strings.  GetContainerLogs will honor the streaming
 // capability of varlink if the client invokes it.
-func (s *VarlinkInterface) GetContainerLogs(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainerLogs")
+func (s *VarlinkInterface) GetContainerLogs(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainerLogs")
 }
 
-func (s *VarlinkInterface) GetContainersLogs(c VarlinkCall, names_ []string, follow_ bool, latest_ bool, since_ string, tail_ int64, timestamps_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainersLogs")
+func (s *VarlinkInterface) GetContainersLogs(ctx context.Context, c VarlinkCall, names_ []string, follow_ bool, latest_ bool, since_ string, tail_ int64, timestamps_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainersLogs")
 }
 
 // ListContainerChanges takes a name or ID of a container and returns changes between the container and
 // its base image. It returns a struct of changed, deleted, and added path names.
-func (s *VarlinkInterface) ListContainerChanges(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListContainerChanges")
+func (s *VarlinkInterface) ListContainerChanges(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListContainerChanges")
 }
 
 // ExportContainer creates an image from a container.  It takes the name or ID of a container and a
@@ -5785,8 +5786,8 @@ func (s *VarlinkInterface) ListContainerChanges(c VarlinkCall, name_ string) err
 //   "tarfile": "/tmp/payne.tar"
 // }
 // ~~~
-func (s *VarlinkInterface) ExportContainer(c VarlinkCall, name_ string, path_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ExportContainer")
+func (s *VarlinkInterface) ExportContainer(ctx context.Context, c VarlinkCall, name_ string, path_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ExportContainer")
 }
 
 // GetContainerStats takes the name or ID of a container and returns a single ContainerStats structure which
@@ -5814,21 +5815,21 @@ func (s *VarlinkInterface) ExportContainer(c VarlinkCall, name_ string, path_ st
 //   }
 // }
 // ~~~
-func (s *VarlinkInterface) GetContainerStats(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainerStats")
+func (s *VarlinkInterface) GetContainerStats(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainerStats")
 }
 
 // GetContainerStatsWithHistory takes a previous set of container statistics and uses libpod functions
 // to calculate the containers statistics based on current and previous measurements.
-func (s *VarlinkInterface) GetContainerStatsWithHistory(c VarlinkCall, previousStats_ ContainerStats) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetContainerStatsWithHistory")
+func (s *VarlinkInterface) GetContainerStatsWithHistory(ctx context.Context, c VarlinkCall, previousStats_ ContainerStats) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetContainerStatsWithHistory")
 }
 
 // StartContainer starts a created or stopped container. It takes the name or ID of container.  It returns
 // the container ID once started.  If the container cannot be found, a [ContainerNotFound](#ContainerNotFound)
 // error will be returned.  See also [CreateContainer](#CreateContainer).
-func (s *VarlinkInterface) StartContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.StartContainer")
+func (s *VarlinkInterface) StartContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.StartContainer")
 }
 
 // StopContainer stops a container given a timeout.  It takes the name or ID of a container as well as a
@@ -5842,8 +5843,8 @@ func (s *VarlinkInterface) StartContainer(c VarlinkCall, name_ string) error {
 //   "container": "135d71b9495f7c3967f536edad57750bfdb569336cd107d8aabab45565ffcfb6"
 // }
 // ~~~
-func (s *VarlinkInterface) StopContainer(c VarlinkCall, name_ string, timeout_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.StopContainer")
+func (s *VarlinkInterface) StopContainer(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.StopContainer")
 }
 
 // InitContainer initializes the given container. It accepts a container name or
@@ -5852,47 +5853,47 @@ func (s *VarlinkInterface) StopContainer(c VarlinkCall, name_ string, timeout_ i
 // Exited states. Initialization prepares a container to be started, but does not
 // start the container. It is intended to be used to debug a container's state
 // prior to starting it.
-func (s *VarlinkInterface) InitContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.InitContainer")
+func (s *VarlinkInterface) InitContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.InitContainer")
 }
 
 // RestartContainer will restart a running container given a container name or ID and timeout value. The timeout
 // value is the time before a forcible stop is used to stop the container.  If the container cannot be found by
 // name or ID, a [ContainerNotFound](#ContainerNotFound)  error will be returned; otherwise, the ID of the
 // container will be returned.
-func (s *VarlinkInterface) RestartContainer(c VarlinkCall, name_ string, timeout_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.RestartContainer")
+func (s *VarlinkInterface) RestartContainer(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.RestartContainer")
 }
 
 // KillContainer takes the name or ID of a container as well as a signal to be applied to the container.  Once the
 // container has been killed, the container's ID is returned.  If the container cannot be found, a
 // [ContainerNotFound](#ContainerNotFound) error is returned. See also [StopContainer](StopContainer).
-func (s *VarlinkInterface) KillContainer(c VarlinkCall, name_ string, signal_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.KillContainer")
+func (s *VarlinkInterface) KillContainer(ctx context.Context, c VarlinkCall, name_ string, signal_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.KillContainer")
 }
 
 // PauseContainer takes the name or ID of container and pauses it.  If the container cannot be found,
 // a [ContainerNotFound](#ContainerNotFound) error will be returned; otherwise the ID of the container is returned.
 // See also [UnpauseContainer](#UnpauseContainer).
-func (s *VarlinkInterface) PauseContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.PauseContainer")
+func (s *VarlinkInterface) PauseContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.PauseContainer")
 }
 
 // UnpauseContainer takes the name or ID of container and unpauses a paused container.  If the container cannot be
 // found, a [ContainerNotFound](#ContainerNotFound) error will be returned; otherwise the ID of the container is returned.
 // See also [PauseContainer](#PauseContainer).
-func (s *VarlinkInterface) UnpauseContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.UnpauseContainer")
+func (s *VarlinkInterface) UnpauseContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.UnpauseContainer")
 }
 
 // Attach takes the name or ID of a container and sets up the ability to remotely attach to its console. The start
 // bool is whether you wish to start the container in question first.
-func (s *VarlinkInterface) Attach(c VarlinkCall, name_ string, detachKeys_ string, start_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.Attach")
+func (s *VarlinkInterface) Attach(ctx context.Context, c VarlinkCall, name_ string, detachKeys_ string, start_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Attach")
 }
 
-func (s *VarlinkInterface) AttachControl(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.AttachControl")
+func (s *VarlinkInterface) AttachControl(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.AttachControl")
 }
 
 // GetAttachSockets takes the name or ID of an existing container.  It returns file paths for two sockets needed
@@ -5910,15 +5911,15 @@ func (s *VarlinkInterface) AttachControl(c VarlinkCall, name_ string) error {
 //   }
 // }
 // ~~~
-func (s *VarlinkInterface) GetAttachSockets(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetAttachSockets")
+func (s *VarlinkInterface) GetAttachSockets(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetAttachSockets")
 }
 
 // WaitContainer takes the name or ID of a container and waits the given interval in milliseconds until the container
 // stops.  Upon stopping, the return code of the container is returned. If the container container cannot be found by ID
 // or name, a [ContainerNotFound](#ContainerNotFound) error is returned.
-func (s *VarlinkInterface) WaitContainer(c VarlinkCall, name_ string, interval_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.WaitContainer")
+func (s *VarlinkInterface) WaitContainer(ctx context.Context, c VarlinkCall, name_ string, interval_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.WaitContainer")
 }
 
 // RemoveContainer requires the name or ID of a container as well as a boolean that
@@ -5934,8 +5935,8 @@ func (s *VarlinkInterface) WaitContainer(c VarlinkCall, name_ string, interval_ 
 //   "container": "62f4fd98cb57f529831e8f90610e54bba74bd6f02920ffb485e15376ed365c20"
 // }
 // ~~~
-func (s *VarlinkInterface) RemoveContainer(c VarlinkCall, name_ string, force_ bool, removeVolumes_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.RemoveContainer")
+func (s *VarlinkInterface) RemoveContainer(ctx context.Context, c VarlinkCall, name_ string, force_ bool, removeVolumes_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.RemoveContainer")
 }
 
 // EvictContainer requires the name or ID of a container as well as a boolean that
@@ -5950,8 +5951,8 @@ func (s *VarlinkInterface) RemoveContainer(c VarlinkCall, name_ string, force_ b
 //   "container": "62f4fd98cb57f529831e8f90610e54bba74bd6f02920ffb485e15376ed365c20"
 // }
 // ~~~
-func (s *VarlinkInterface) EvictContainer(c VarlinkCall, name_ string, removeVolumes_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.EvictContainer")
+func (s *VarlinkInterface) EvictContainer(ctx context.Context, c VarlinkCall, name_ string, removeVolumes_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.EvictContainer")
 }
 
 // DeleteStoppedContainers will delete all containers that are not running. It will return a list the deleted
@@ -5968,20 +5969,20 @@ func (s *VarlinkInterface) EvictContainer(c VarlinkCall, name_ string, removeVol
 //   ]
 // }
 // ~~~
-func (s *VarlinkInterface) DeleteStoppedContainers(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.DeleteStoppedContainers")
+func (s *VarlinkInterface) DeleteStoppedContainers(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.DeleteStoppedContainers")
 }
 
 // ListImages returns information about the images that are currently in storage.
 // See also [InspectImage](#InspectImage).
-func (s *VarlinkInterface) ListImages(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListImages")
+func (s *VarlinkInterface) ListImages(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListImages")
 }
 
 // GetImage returns information about a single image in storage.
 // If the image caGetImage returns be found, [ImageNotFound](#ImageNotFound) will be returned.
-func (s *VarlinkInterface) GetImage(c VarlinkCall, id_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetImage")
+func (s *VarlinkInterface) GetImage(ctx context.Context, c VarlinkCall, id_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetImage")
 }
 
 // BuildImage takes a [BuildInfo](#BuildInfo) structure and builds an image.  At a minimum, you must provide the
@@ -6022,35 +6023,35 @@ func (s *VarlinkInterface) GetImage(c VarlinkCall, id_ string) error {
 //  }
 // }
 // ~~~
-func (s *VarlinkInterface) BuildImage(c VarlinkCall, build_ BuildInfo) error {
-	return c.ReplyMethodNotImplemented("io.podman.BuildImage")
+func (s *VarlinkInterface) BuildImage(ctx context.Context, c VarlinkCall, build_ BuildInfo) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.BuildImage")
 }
 
 // InspectImage takes the name or ID of an image and returns a string representation of data associated with the
 // mage.  You must serialize the string into JSON to use it further.  An [ImageNotFound](#ImageNotFound) error will
 // be returned if the image cannot be found.
-func (s *VarlinkInterface) InspectImage(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.InspectImage")
+func (s *VarlinkInterface) InspectImage(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.InspectImage")
 }
 
 // HistoryImage takes the name or ID of an image and returns information about its history and layers.  The returned
 // history is in the form of an array of ImageHistory structures.  If the image cannot be found, an
 // [ImageNotFound](#ImageNotFound) error is returned.
-func (s *VarlinkInterface) HistoryImage(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.HistoryImage")
+func (s *VarlinkInterface) HistoryImage(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.HistoryImage")
 }
 
 // PushImage takes two input arguments: the name or ID of an image, the fully-qualified destination name of the image,
 // It will return an [ImageNotFound](#ImageNotFound) error if
 // the image cannot be found in local storage; otherwise it will return a [MoreResponse](#MoreResponse)
-func (s *VarlinkInterface) PushImage(c VarlinkCall, name_ string, tag_ string, compress_ bool, format_ string, removeSignatures_ bool, signBy_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.PushImage")
+func (s *VarlinkInterface) PushImage(ctx context.Context, c VarlinkCall, name_ string, tag_ string, compress_ bool, format_ string, removeSignatures_ bool, signBy_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.PushImage")
 }
 
 // TagImage takes the name or ID of an image in local storage as well as the desired tag name.  If the image cannot
 // be found, an [ImageNotFound](#ImageNotFound) error will be returned; otherwise, the ID of the image is returned on success.
-func (s *VarlinkInterface) TagImage(c VarlinkCall, name_ string, tagged_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.TagImage")
+func (s *VarlinkInterface) TagImage(ctx context.Context, c VarlinkCall, name_ string, tagged_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.TagImage")
 }
 
 // RemoveImage takes the name or ID of an image as well as a boolean that determines if containers using that image
@@ -6063,15 +6064,15 @@ func (s *VarlinkInterface) TagImage(c VarlinkCall, name_ string, tagged_ string)
 //   "image": "426866d6fa419873f97e5cbd320eeb22778244c1dfffa01c944db3114f55772e"
 // }
 // ~~~
-func (s *VarlinkInterface) RemoveImage(c VarlinkCall, name_ string, force_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.RemoveImage")
+func (s *VarlinkInterface) RemoveImage(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.RemoveImage")
 }
 
 // SearchImages searches available registries for images that contain the
 // contents of "query" in their name. If "limit" is given, limits the amount of
 // search results per registry.
-func (s *VarlinkInterface) SearchImages(c VarlinkCall, query_ string, limit_ *int64, filter_ ImageSearchFilter) error {
-	return c.ReplyMethodNotImplemented("io.podman.SearchImages")
+func (s *VarlinkInterface) SearchImages(ctx context.Context, c VarlinkCall, query_ string, limit_ *int64, filter_ ImageSearchFilter) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.SearchImages")
 }
 
 // DeleteUnusedImages deletes any images not associated with a container.  The IDs of the deleted images are returned
@@ -6088,8 +6089,8 @@ func (s *VarlinkInterface) SearchImages(c VarlinkCall, query_ string, limit_ *in
 //   ]
 // }
 // ~~~
-func (s *VarlinkInterface) DeleteUnusedImages(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.DeleteUnusedImages")
+func (s *VarlinkInterface) DeleteUnusedImages(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.DeleteUnusedImages")
 }
 
 // Commit, creates an image from an existing container. It requires the name or
@@ -6099,14 +6100,14 @@ func (s *VarlinkInterface) DeleteUnusedImages(c VarlinkCall) error {
 // container while it is being committed, pass a _true_ bool for the pause argument.  If the container cannot
 // be found by the ID or name provided, a (ContainerNotFound)[#ContainerNotFound] error will be returned; otherwise,
 // the resulting image's ID will be returned as a string inside a MoreResponse.
-func (s *VarlinkInterface) Commit(c VarlinkCall, name_ string, image_name_ string, changes_ []string, author_ string, message_ string, pause_ bool, manifestType_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.Commit")
+func (s *VarlinkInterface) Commit(ctx context.Context, c VarlinkCall, name_ string, image_name_ string, changes_ []string, author_ string, message_ string, pause_ bool, manifestType_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Commit")
 }
 
 // ImportImage imports an image from a source (like tarball) into local storage.  The image can have additional
 // descriptions added to it using the message and changes options. See also [ExportImage](ExportImage).
-func (s *VarlinkInterface) ImportImage(c VarlinkCall, source_ string, reference_ string, message_ string, changes_ []string, delete_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ImportImage")
+func (s *VarlinkInterface) ImportImage(ctx context.Context, c VarlinkCall, source_ string, reference_ string, message_ string, changes_ []string, delete_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ImportImage")
 }
 
 // ExportImage takes the name or ID of an image and exports it to a destination like a tarball.  There is also
@@ -6114,15 +6115,15 @@ func (s *VarlinkInterface) ImportImage(c VarlinkCall, source_ string, reference_
 // tags of the same image to a tarball (each tag should be of the form <image>:<tag>).  Upon completion, the ID
 // of the image is returned. If the image cannot be found in local storage, an [ImageNotFound](#ImageNotFound)
 // error will be returned. See also [ImportImage](ImportImage).
-func (s *VarlinkInterface) ExportImage(c VarlinkCall, name_ string, destination_ string, compress_ bool, tags_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ExportImage")
+func (s *VarlinkInterface) ExportImage(ctx context.Context, c VarlinkCall, name_ string, destination_ string, compress_ bool, tags_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ExportImage")
 }
 
 // PullImage pulls an image from a repository to local storage.  After a successful pull, the image id and logs
 // are returned as a [MoreResponse](#MoreResponse).  This connection also will handle a WantsMores request to send
 // status as it occurs.
-func (s *VarlinkInterface) PullImage(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.PullImage")
+func (s *VarlinkInterface) PullImage(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.PullImage")
 }
 
 // CreatePod creates a new empty pod.  It uses a [PodCreate](#PodCreate) type for input.
@@ -6138,8 +6139,8 @@ func (s *VarlinkInterface) PullImage(c VarlinkCall, name_ string) error {
 //   "pod": "d7697449a8035f613c1a8891286502aca68fff7d5d49a85279b3bda229af3b28"
 // }
 // ~~~
-func (s *VarlinkInterface) CreatePod(c VarlinkCall, create_ PodCreate) error {
-	return c.ReplyMethodNotImplemented("io.podman.CreatePod")
+func (s *VarlinkInterface) CreatePod(ctx context.Context, c VarlinkCall, create_ PodCreate) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.CreatePod")
 }
 
 // ListPods returns a list of pods in no particular order.  They are
@@ -6187,8 +6188,8 @@ func (s *VarlinkInterface) CreatePod(c VarlinkCall, create_ PodCreate) error {
 //   ]
 // }
 // ~~~
-func (s *VarlinkInterface) ListPods(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListPods")
+func (s *VarlinkInterface) ListPods(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListPods")
 }
 
 // GetPod takes a name or ID of a pod and returns single [ListPodData](#ListPodData)
@@ -6220,15 +6221,15 @@ func (s *VarlinkInterface) ListPods(c VarlinkCall) error {
 //   }
 // }
 // ~~~
-func (s *VarlinkInterface) GetPod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetPod")
+func (s *VarlinkInterface) GetPod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetPod")
 }
 
 // InspectPod takes the name or ID of an image and returns a string representation of data associated with the
 // pod.  You must serialize the string into JSON to use it further.  A [PodNotFound](#PodNotFound) error will
 // be returned if the pod cannot be found.
-func (s *VarlinkInterface) InspectPod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.InspectPod")
+func (s *VarlinkInterface) InspectPod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.InspectPod")
 }
 
 // StartPod starts containers in a pod.  It takes the name or ID of pod.  If the pod cannot be found, a [PodNotFound](#PodNotFound)
@@ -6243,8 +6244,8 @@ func (s *VarlinkInterface) InspectPod(c VarlinkCall, name_ string) error {
 //   "pod": "135d71b9495f7c3967f536edad57750bfdb569336cd107d8aabab45565ffcfb6",
 // }
 // ~~~
-func (s *VarlinkInterface) StartPod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.StartPod")
+func (s *VarlinkInterface) StartPod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.StartPod")
 }
 
 // StopPod stops containers in a pod.  It takes the name or ID of a pod and a timeout.
@@ -6260,8 +6261,8 @@ func (s *VarlinkInterface) StartPod(c VarlinkCall, name_ string) error {
 //   "pod": "135d71b9495f7c3967f536edad57750bfdb569336cd107d8aabab45565ffcfb6"
 // }
 // ~~~
-func (s *VarlinkInterface) StopPod(c VarlinkCall, name_ string, timeout_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.StopPod")
+func (s *VarlinkInterface) StopPod(ctx context.Context, c VarlinkCall, name_ string, timeout_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.StopPod")
 }
 
 // RestartPod will restart containers in a pod given a pod name or ID. Containers in
@@ -6277,8 +6278,8 @@ func (s *VarlinkInterface) StopPod(c VarlinkCall, name_ string, timeout_ int64) 
 //   "pod": "135d71b9495f7c3967f536edad57750bfdb569336cd107d8aabab45565ffcfb6"
 // }
 // ~~~
-func (s *VarlinkInterface) RestartPod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.RestartPod")
+func (s *VarlinkInterface) RestartPod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.RestartPod")
 }
 
 // KillPod takes the name or ID of a pod as well as a signal to be applied to the pod.  If the pod cannot be found, a
@@ -6294,8 +6295,8 @@ func (s *VarlinkInterface) RestartPod(c VarlinkCall, name_ string) error {
 //   "pod": "1840835294cf076a822e4e12ba4152411f131bd869e7f6a4e8b16df9b0ea5c7f"
 // }
 // ~~~
-func (s *VarlinkInterface) KillPod(c VarlinkCall, name_ string, signal_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.KillPod")
+func (s *VarlinkInterface) KillPod(ctx context.Context, c VarlinkCall, name_ string, signal_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.KillPod")
 }
 
 // PausePod takes the name or ID of a pod and pauses the running containers associated with it.  If the pod cannot be found,
@@ -6311,8 +6312,8 @@ func (s *VarlinkInterface) KillPod(c VarlinkCall, name_ string, signal_ int64) e
 //   "pod": "1840835294cf076a822e4e12ba4152411f131bd869e7f6a4e8b16df9b0ea5c7f"
 // }
 // ~~~
-func (s *VarlinkInterface) PausePod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.PausePod")
+func (s *VarlinkInterface) PausePod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.PausePod")
 }
 
 // UnpausePod takes the name or ID of a pod and unpauses the paused containers associated with it.  If the pod cannot be
@@ -6328,8 +6329,8 @@ func (s *VarlinkInterface) PausePod(c VarlinkCall, name_ string) error {
 //   "pod": "1840835294cf076a822e4e12ba4152411f131bd869e7f6a4e8b16df9b0ea5c7f"
 // }
 // ~~~
-func (s *VarlinkInterface) UnpausePod(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.UnpausePod")
+func (s *VarlinkInterface) UnpausePod(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.UnpausePod")
 }
 
 // RemovePod takes the name or ID of a pod as well a boolean representing whether a running
@@ -6346,12 +6347,12 @@ func (s *VarlinkInterface) UnpausePod(c VarlinkCall, name_ string) error {
 //   "pod": "62f4fd98cb57f529831e8f90610e54bba74bd6f02920ffb485e15376ed365c20"
 // }
 // ~~~
-func (s *VarlinkInterface) RemovePod(c VarlinkCall, name_ string, force_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.RemovePod")
+func (s *VarlinkInterface) RemovePod(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.RemovePod")
 }
 
-func (s *VarlinkInterface) TopPod(c VarlinkCall, pod_ string, latest_ bool, descriptors_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.TopPod")
+func (s *VarlinkInterface) TopPod(ctx context.Context, c VarlinkCall, pod_ string, latest_ bool, descriptors_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.TopPod")
 }
 
 // GetPodStats takes the name or ID of a pod and returns a pod name and slice of ContainerStats structure which
@@ -6382,13 +6383,13 @@ func (s *VarlinkInterface) TopPod(c VarlinkCall, pod_ string, latest_ bool, desc
 //   "pod": "7f62b508b6f12b11d8fe02e0db4de6b9e43a7d7699b33a4fc0d574f6e82b4ebd"
 // }
 // ~~~
-func (s *VarlinkInterface) GetPodStats(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetPodStats")
+func (s *VarlinkInterface) GetPodStats(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetPodStats")
 }
 
 // GetPodsByStatus searches for pods whose status is included in statuses
-func (s *VarlinkInterface) GetPodsByStatus(c VarlinkCall, statuses_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetPodsByStatus")
+func (s *VarlinkInterface) GetPodsByStatus(ctx context.Context, c VarlinkCall, statuses_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetPodsByStatus")
 }
 
 // ImageExists talks a full or partial image ID or name and returns an int as to whether
@@ -6401,8 +6402,8 @@ func (s *VarlinkInterface) GetPodsByStatus(c VarlinkCall, statuses_ []string) er
 //   "exists": 1
 // }
 // ~~~
-func (s *VarlinkInterface) ImageExists(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ImageExists")
+func (s *VarlinkInterface) ImageExists(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ImageExists")
 }
 
 // ContainerExists takes a full or partial container ID or name and returns an int as to
@@ -6414,31 +6415,31 @@ func (s *VarlinkInterface) ImageExists(c VarlinkCall, name_ string) error {
 //   "exists": 0
 // }
 // ~~~
-func (s *VarlinkInterface) ContainerExists(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerExists")
+func (s *VarlinkInterface) ContainerExists(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerExists")
 }
 
 // ContainerCheckPoint performs a checkpopint on a container by its name or full/partial container
 // ID.  On successful checkpoint, the id of the checkpointed container is returned.
-func (s *VarlinkInterface) ContainerCheckpoint(c VarlinkCall, name_ string, keep_ bool, leaveRunning_ bool, tcpEstablished_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerCheckpoint")
+func (s *VarlinkInterface) ContainerCheckpoint(ctx context.Context, c VarlinkCall, name_ string, keep_ bool, leaveRunning_ bool, tcpEstablished_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerCheckpoint")
 }
 
 // ContainerRestore restores a container that has been checkpointed.  The container to be restored can
 // be identified by its name or full/partial container ID.  A successful restore will result in the return
 // of the container's ID.
-func (s *VarlinkInterface) ContainerRestore(c VarlinkCall, name_ string, keep_ bool, tcpEstablished_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerRestore")
+func (s *VarlinkInterface) ContainerRestore(ctx context.Context, c VarlinkCall, name_ string, keep_ bool, tcpEstablished_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerRestore")
 }
 
 // ContainerRunlabel runs executes a command as described by a given container image label.
-func (s *VarlinkInterface) ContainerRunlabel(c VarlinkCall, runlabel_ Runlabel) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerRunlabel")
+func (s *VarlinkInterface) ContainerRunlabel(ctx context.Context, c VarlinkCall, runlabel_ Runlabel) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerRunlabel")
 }
 
 // ExecContainer executes a command in the given container.
-func (s *VarlinkInterface) ExecContainer(c VarlinkCall, opts_ ExecOpts) error {
-	return c.ReplyMethodNotImplemented("io.podman.ExecContainer")
+func (s *VarlinkInterface) ExecContainer(ctx context.Context, c VarlinkCall, opts_ ExecOpts) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ExecContainer")
 }
 
 // ListContainerMounts gathers all the mounted container mount points and returns them as an array
@@ -6453,8 +6454,8 @@ func (s *VarlinkInterface) ExecContainer(c VarlinkCall, opts_ ExecOpts) error {
 //   }
 // }
 // ~~~
-func (s *VarlinkInterface) ListContainerMounts(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.ListContainerMounts")
+func (s *VarlinkInterface) ListContainerMounts(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ListContainerMounts")
 }
 
 // MountContainer mounts a container by name or full/partial ID.  Upon a successful mount, the destination
@@ -6465,8 +6466,8 @@ func (s *VarlinkInterface) ListContainerMounts(c VarlinkCall) error {
 //   "path": "/var/lib/containers/storage/overlay/419eeb04e783ea159149ced67d9fcfc15211084d65e894792a96bedfae0470ca/merged"
 // }
 // ~~~
-func (s *VarlinkInterface) MountContainer(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.MountContainer")
+func (s *VarlinkInterface) MountContainer(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.MountContainer")
 }
 
 // UnmountContainer umounts a container by its name or full/partial container ID.
@@ -6475,141 +6476,141 @@ func (s *VarlinkInterface) MountContainer(c VarlinkCall, name_ string) error {
 // $ varlink call -m unix:/run/podman/io.podman/io.podman.UnmountContainer '{"name": "jolly_shannon", "force": false}'
 // {}
 // ~~~
-func (s *VarlinkInterface) UnmountContainer(c VarlinkCall, name_ string, force_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.UnmountContainer")
+func (s *VarlinkInterface) UnmountContainer(ctx context.Context, c VarlinkCall, name_ string, force_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.UnmountContainer")
 }
 
 // ImagesPrune removes all unused images from the local store.  Upon successful pruning,
 // the IDs of the removed images are returned.
-func (s *VarlinkInterface) ImagesPrune(c VarlinkCall, all_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ImagesPrune")
+func (s *VarlinkInterface) ImagesPrune(ctx context.Context, c VarlinkCall, all_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ImagesPrune")
 }
 
 // GenerateKube generates a Kubernetes v1 Pod description of a Podman container or pod
 // and its containers. The description is in YAML.  See also [ReplayKube](ReplayKube).
-func (s *VarlinkInterface) GenerateKube(c VarlinkCall, name_ string, service_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.GenerateKube")
+func (s *VarlinkInterface) GenerateKube(ctx context.Context, c VarlinkCall, name_ string, service_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GenerateKube")
 }
 
 // ContainerConfig returns a container's config in string form. This call is for
 // development of Podman only and generally should not be used.
-func (s *VarlinkInterface) ContainerConfig(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerConfig")
+func (s *VarlinkInterface) ContainerConfig(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerConfig")
 }
 
 // ContainerArtifacts returns a container's artifacts in string form.  This call is for
 // development of Podman only and generally should not be used.
-func (s *VarlinkInterface) ContainerArtifacts(c VarlinkCall, name_ string, artifactName_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerArtifacts")
+func (s *VarlinkInterface) ContainerArtifacts(ctx context.Context, c VarlinkCall, name_ string, artifactName_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerArtifacts")
 }
 
 // ContainerInspectData returns a container's inspect data in string form.  This call is for
 // development of Podman only and generally should not be used.
-func (s *VarlinkInterface) ContainerInspectData(c VarlinkCall, name_ string, size_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerInspectData")
+func (s *VarlinkInterface) ContainerInspectData(ctx context.Context, c VarlinkCall, name_ string, size_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerInspectData")
 }
 
 // ContainerStateData returns a container's state config in string form.  This call is for
 // development of Podman only and generally should not be used.
-func (s *VarlinkInterface) ContainerStateData(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.ContainerStateData")
+func (s *VarlinkInterface) ContainerStateData(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ContainerStateData")
 }
 
 // PodStateData returns inspectr level information of a given pod in string form.  This call is for
 // development of Podman only and generally should not be used.
-func (s *VarlinkInterface) PodStateData(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.PodStateData")
+func (s *VarlinkInterface) PodStateData(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.PodStateData")
 }
 
 // This call is for the development of Podman only and should not be used.
-func (s *VarlinkInterface) CreateFromCC(c VarlinkCall, in_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.CreateFromCC")
+func (s *VarlinkInterface) CreateFromCC(ctx context.Context, c VarlinkCall, in_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.CreateFromCC")
 }
 
 // Spec returns the oci spec for a container.  This call is for development of Podman only and generally should not be used.
-func (s *VarlinkInterface) Spec(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.Spec")
+func (s *VarlinkInterface) Spec(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Spec")
 }
 
 // Sendfile allows a remote client to send a file to the host
-func (s *VarlinkInterface) SendFile(c VarlinkCall, type_ string, length_ int64) error {
-	return c.ReplyMethodNotImplemented("io.podman.SendFile")
+func (s *VarlinkInterface) SendFile(ctx context.Context, c VarlinkCall, type_ string, length_ int64) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.SendFile")
 }
 
 // ReceiveFile allows the host to send a remote client a file
-func (s *VarlinkInterface) ReceiveFile(c VarlinkCall, path_ string, delete_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.ReceiveFile")
+func (s *VarlinkInterface) ReceiveFile(ctx context.Context, c VarlinkCall, path_ string, delete_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ReceiveFile")
 }
 
 // VolumeCreate creates a volume on a remote host
-func (s *VarlinkInterface) VolumeCreate(c VarlinkCall, options_ VolumeCreateOpts) error {
-	return c.ReplyMethodNotImplemented("io.podman.VolumeCreate")
+func (s *VarlinkInterface) VolumeCreate(ctx context.Context, c VarlinkCall, options_ VolumeCreateOpts) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.VolumeCreate")
 }
 
 // VolumeRemove removes a volume on a remote host
-func (s *VarlinkInterface) VolumeRemove(c VarlinkCall, options_ VolumeRemoveOpts) error {
-	return c.ReplyMethodNotImplemented("io.podman.VolumeRemove")
+func (s *VarlinkInterface) VolumeRemove(ctx context.Context, c VarlinkCall, options_ VolumeRemoveOpts) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.VolumeRemove")
 }
 
 // GetVolumes gets slice of the volumes on a remote host
-func (s *VarlinkInterface) GetVolumes(c VarlinkCall, args_ []string, all_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetVolumes")
+func (s *VarlinkInterface) GetVolumes(ctx context.Context, c VarlinkCall, args_ []string, all_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetVolumes")
 }
 
 // VolumesPrune removes unused volumes on the host
-func (s *VarlinkInterface) VolumesPrune(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.VolumesPrune")
+func (s *VarlinkInterface) VolumesPrune(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.VolumesPrune")
 }
 
 // ImageSave allows you to save an image from the local image storage to a tarball
-func (s *VarlinkInterface) ImageSave(c VarlinkCall, options_ ImageSaveOptions) error {
-	return c.ReplyMethodNotImplemented("io.podman.ImageSave")
+func (s *VarlinkInterface) ImageSave(ctx context.Context, c VarlinkCall, options_ ImageSaveOptions) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.ImageSave")
 }
 
 // GetPodsByContext allows you to get a list pod ids depending on all, latest, or a list of
 // pod names.  The definition of latest pod means the latest by creation date.  In a multi-
 // user environment, results might differ from what you expect.
-func (s *VarlinkInterface) GetPodsByContext(c VarlinkCall, all_ bool, latest_ bool, args_ []string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetPodsByContext")
+func (s *VarlinkInterface) GetPodsByContext(ctx context.Context, c VarlinkCall, all_ bool, latest_ bool, args_ []string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetPodsByContext")
 }
 
 // LoadImage allows you to load an image into local storage from a tarball.
-func (s *VarlinkInterface) LoadImage(c VarlinkCall, name_ string, inputFile_ string, quiet_ bool, deleteFile_ bool) error {
-	return c.ReplyMethodNotImplemented("io.podman.LoadImage")
+func (s *VarlinkInterface) LoadImage(ctx context.Context, c VarlinkCall, name_ string, inputFile_ string, quiet_ bool, deleteFile_ bool) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.LoadImage")
 }
 
 // GetEvents returns known libpod events filtered by the options provided.
-func (s *VarlinkInterface) GetEvents(c VarlinkCall, filter_ []string, since_ string, until_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetEvents")
+func (s *VarlinkInterface) GetEvents(ctx context.Context, c VarlinkCall, filter_ []string, since_ string, until_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetEvents")
 }
 
 // Diff returns a diff between libpod objects
-func (s *VarlinkInterface) Diff(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.Diff")
+func (s *VarlinkInterface) Diff(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.Diff")
 }
 
 // GetLayersMapWithImageInfo is for the development of Podman and should not be used.
-func (s *VarlinkInterface) GetLayersMapWithImageInfo(c VarlinkCall) error {
-	return c.ReplyMethodNotImplemented("io.podman.GetLayersMapWithImageInfo")
+func (s *VarlinkInterface) GetLayersMapWithImageInfo(ctx context.Context, c VarlinkCall) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.GetLayersMapWithImageInfo")
 }
 
 // BuildImageHierarchyMap is for the development of Podman and should not be used.
-func (s *VarlinkInterface) BuildImageHierarchyMap(c VarlinkCall, name_ string) error {
-	return c.ReplyMethodNotImplemented("io.podman.BuildImageHierarchyMap")
+func (s *VarlinkInterface) BuildImageHierarchyMap(ctx context.Context, c VarlinkCall, name_ string) error {
+	return c.ReplyMethodNotImplemented(ctx, "io.podman.BuildImageHierarchyMap")
 }
 
 // Generated method call dispatcher
 
-func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string) error {
+func (s *VarlinkInterface) VarlinkDispatch(ctx context.Context, call varlink.Call, methodname string) error {
 	switch methodname {
 	case "GetVersion":
-		return s.iopodmanInterface.GetVersion(VarlinkCall{call})
+		return s.iopodmanInterface.GetVersion(ctx, VarlinkCall{call})
 
 	case "GetInfo":
-		return s.iopodmanInterface.GetInfo(VarlinkCall{call})
+		return s.iopodmanInterface.GetInfo(ctx, VarlinkCall{call})
 
 	case "ListContainers":
-		return s.iopodmanInterface.ListContainers(VarlinkCall{call})
+		return s.iopodmanInterface.ListContainers(ctx, VarlinkCall{call})
 
 	case "Ps":
 		var in struct {
@@ -6617,9 +6618,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Ps(VarlinkCall{call}, in.Opts)
+		return s.iopodmanInterface.Ps(ctx, VarlinkCall{call}, in.Opts)
 
 	case "GetContainersByStatus":
 		var in struct {
@@ -6627,9 +6628,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainersByStatus(VarlinkCall{call}, []string(in.Status))
+		return s.iopodmanInterface.GetContainersByStatus(ctx, VarlinkCall{call}, []string(in.Status))
 
 	case "Top":
 		var in struct {
@@ -6638,9 +6639,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Top(VarlinkCall{call}, in.NameOrID, []string(in.Descriptors))
+		return s.iopodmanInterface.Top(ctx, VarlinkCall{call}, in.NameOrID, []string(in.Descriptors))
 
 	case "HealthCheckRun":
 		var in struct {
@@ -6648,9 +6649,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.HealthCheckRun(VarlinkCall{call}, in.NameOrID)
+		return s.iopodmanInterface.HealthCheckRun(ctx, VarlinkCall{call}, in.NameOrID)
 
 	case "GetContainer":
 		var in struct {
@@ -6658,9 +6659,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainer(VarlinkCall{call}, in.Id)
+		return s.iopodmanInterface.GetContainer(ctx, VarlinkCall{call}, in.Id)
 
 	case "GetContainersByContext":
 		var in struct {
@@ -6670,9 +6671,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainersByContext(VarlinkCall{call}, in.All, in.Latest, []string(in.Args))
+		return s.iopodmanInterface.GetContainersByContext(ctx, VarlinkCall{call}, in.All, in.Latest, []string(in.Args))
 
 	case "CreateContainer":
 		var in struct {
@@ -6680,9 +6681,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.CreateContainer(VarlinkCall{call}, in.Create)
+		return s.iopodmanInterface.CreateContainer(ctx, VarlinkCall{call}, in.Create)
 
 	case "InspectContainer":
 		var in struct {
@@ -6690,9 +6691,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.InspectContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.InspectContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "ListContainerProcesses":
 		var in struct {
@@ -6701,9 +6702,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ListContainerProcesses(VarlinkCall{call}, in.Name, []string(in.Opts))
+		return s.iopodmanInterface.ListContainerProcesses(ctx, VarlinkCall{call}, in.Name, []string(in.Opts))
 
 	case "GetContainerLogs":
 		var in struct {
@@ -6711,9 +6712,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainerLogs(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.GetContainerLogs(ctx, VarlinkCall{call}, in.Name)
 
 	case "GetContainersLogs":
 		var in struct {
@@ -6726,9 +6727,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainersLogs(VarlinkCall{call}, []string(in.Names), in.Follow, in.Latest, in.Since, in.Tail, in.Timestamps)
+		return s.iopodmanInterface.GetContainersLogs(ctx, VarlinkCall{call}, []string(in.Names), in.Follow, in.Latest, in.Since, in.Tail, in.Timestamps)
 
 	case "ListContainerChanges":
 		var in struct {
@@ -6736,9 +6737,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ListContainerChanges(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.ListContainerChanges(ctx, VarlinkCall{call}, in.Name)
 
 	case "ExportContainer":
 		var in struct {
@@ -6747,9 +6748,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ExportContainer(VarlinkCall{call}, in.Name, in.Path)
+		return s.iopodmanInterface.ExportContainer(ctx, VarlinkCall{call}, in.Name, in.Path)
 
 	case "GetContainerStats":
 		var in struct {
@@ -6757,9 +6758,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainerStats(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.GetContainerStats(ctx, VarlinkCall{call}, in.Name)
 
 	case "GetContainerStatsWithHistory":
 		var in struct {
@@ -6767,9 +6768,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetContainerStatsWithHistory(VarlinkCall{call}, in.PreviousStats)
+		return s.iopodmanInterface.GetContainerStatsWithHistory(ctx, VarlinkCall{call}, in.PreviousStats)
 
 	case "StartContainer":
 		var in struct {
@@ -6777,9 +6778,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.StartContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.StartContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "StopContainer":
 		var in struct {
@@ -6788,9 +6789,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.StopContainer(VarlinkCall{call}, in.Name, in.Timeout)
+		return s.iopodmanInterface.StopContainer(ctx, VarlinkCall{call}, in.Name, in.Timeout)
 
 	case "InitContainer":
 		var in struct {
@@ -6798,9 +6799,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.InitContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.InitContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "RestartContainer":
 		var in struct {
@@ -6809,9 +6810,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.RestartContainer(VarlinkCall{call}, in.Name, in.Timeout)
+		return s.iopodmanInterface.RestartContainer(ctx, VarlinkCall{call}, in.Name, in.Timeout)
 
 	case "KillContainer":
 		var in struct {
@@ -6820,9 +6821,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.KillContainer(VarlinkCall{call}, in.Name, in.Signal)
+		return s.iopodmanInterface.KillContainer(ctx, VarlinkCall{call}, in.Name, in.Signal)
 
 	case "PauseContainer":
 		var in struct {
@@ -6830,9 +6831,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.PauseContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.PauseContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "UnpauseContainer":
 		var in struct {
@@ -6840,9 +6841,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.UnpauseContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.UnpauseContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "Attach":
 		var in struct {
@@ -6852,9 +6853,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Attach(VarlinkCall{call}, in.Name, in.DetachKeys, in.Start)
+		return s.iopodmanInterface.Attach(ctx, VarlinkCall{call}, in.Name, in.DetachKeys, in.Start)
 
 	case "AttachControl":
 		var in struct {
@@ -6862,9 +6863,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.AttachControl(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.AttachControl(ctx, VarlinkCall{call}, in.Name)
 
 	case "GetAttachSockets":
 		var in struct {
@@ -6872,9 +6873,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetAttachSockets(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.GetAttachSockets(ctx, VarlinkCall{call}, in.Name)
 
 	case "WaitContainer":
 		var in struct {
@@ -6883,9 +6884,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.WaitContainer(VarlinkCall{call}, in.Name, in.Interval)
+		return s.iopodmanInterface.WaitContainer(ctx, VarlinkCall{call}, in.Name, in.Interval)
 
 	case "RemoveContainer":
 		var in struct {
@@ -6895,9 +6896,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.RemoveContainer(VarlinkCall{call}, in.Name, in.Force, in.RemoveVolumes)
+		return s.iopodmanInterface.RemoveContainer(ctx, VarlinkCall{call}, in.Name, in.Force, in.RemoveVolumes)
 
 	case "EvictContainer":
 		var in struct {
@@ -6906,15 +6907,15 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.EvictContainer(VarlinkCall{call}, in.Name, in.RemoveVolumes)
+		return s.iopodmanInterface.EvictContainer(ctx, VarlinkCall{call}, in.Name, in.RemoveVolumes)
 
 	case "DeleteStoppedContainers":
-		return s.iopodmanInterface.DeleteStoppedContainers(VarlinkCall{call})
+		return s.iopodmanInterface.DeleteStoppedContainers(ctx, VarlinkCall{call})
 
 	case "ListImages":
-		return s.iopodmanInterface.ListImages(VarlinkCall{call})
+		return s.iopodmanInterface.ListImages(ctx, VarlinkCall{call})
 
 	case "GetImage":
 		var in struct {
@@ -6922,9 +6923,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetImage(VarlinkCall{call}, in.Id)
+		return s.iopodmanInterface.GetImage(ctx, VarlinkCall{call}, in.Id)
 
 	case "BuildImage":
 		var in struct {
@@ -6932,9 +6933,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.BuildImage(VarlinkCall{call}, in.Build)
+		return s.iopodmanInterface.BuildImage(ctx, VarlinkCall{call}, in.Build)
 
 	case "InspectImage":
 		var in struct {
@@ -6942,9 +6943,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.InspectImage(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.InspectImage(ctx, VarlinkCall{call}, in.Name)
 
 	case "HistoryImage":
 		var in struct {
@@ -6952,9 +6953,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.HistoryImage(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.HistoryImage(ctx, VarlinkCall{call}, in.Name)
 
 	case "PushImage":
 		var in struct {
@@ -6967,9 +6968,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.PushImage(VarlinkCall{call}, in.Name, in.Tag, in.Compress, in.Format, in.RemoveSignatures, in.SignBy)
+		return s.iopodmanInterface.PushImage(ctx, VarlinkCall{call}, in.Name, in.Tag, in.Compress, in.Format, in.RemoveSignatures, in.SignBy)
 
 	case "TagImage":
 		var in struct {
@@ -6978,9 +6979,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.TagImage(VarlinkCall{call}, in.Name, in.Tagged)
+		return s.iopodmanInterface.TagImage(ctx, VarlinkCall{call}, in.Name, in.Tagged)
 
 	case "RemoveImage":
 		var in struct {
@@ -6989,9 +6990,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.RemoveImage(VarlinkCall{call}, in.Name, in.Force)
+		return s.iopodmanInterface.RemoveImage(ctx, VarlinkCall{call}, in.Name, in.Force)
 
 	case "SearchImages":
 		var in struct {
@@ -7001,12 +7002,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.SearchImages(VarlinkCall{call}, in.Query, in.Limit, in.Filter)
+		return s.iopodmanInterface.SearchImages(ctx, VarlinkCall{call}, in.Query, in.Limit, in.Filter)
 
 	case "DeleteUnusedImages":
-		return s.iopodmanInterface.DeleteUnusedImages(VarlinkCall{call})
+		return s.iopodmanInterface.DeleteUnusedImages(ctx, VarlinkCall{call})
 
 	case "Commit":
 		var in struct {
@@ -7020,9 +7021,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Commit(VarlinkCall{call}, in.Name, in.Image_name, []string(in.Changes), in.Author, in.Message, in.Pause, in.ManifestType)
+		return s.iopodmanInterface.Commit(ctx, VarlinkCall{call}, in.Name, in.Image_name, []string(in.Changes), in.Author, in.Message, in.Pause, in.ManifestType)
 
 	case "ImportImage":
 		var in struct {
@@ -7034,9 +7035,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ImportImage(VarlinkCall{call}, in.Source, in.Reference, in.Message, []string(in.Changes), in.Delete)
+		return s.iopodmanInterface.ImportImage(ctx, VarlinkCall{call}, in.Source, in.Reference, in.Message, []string(in.Changes), in.Delete)
 
 	case "ExportImage":
 		var in struct {
@@ -7047,9 +7048,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ExportImage(VarlinkCall{call}, in.Name, in.Destination, in.Compress, []string(in.Tags))
+		return s.iopodmanInterface.ExportImage(ctx, VarlinkCall{call}, in.Name, in.Destination, in.Compress, []string(in.Tags))
 
 	case "PullImage":
 		var in struct {
@@ -7057,9 +7058,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.PullImage(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.PullImage(ctx, VarlinkCall{call}, in.Name)
 
 	case "CreatePod":
 		var in struct {
@@ -7067,12 +7068,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.CreatePod(VarlinkCall{call}, in.Create)
+		return s.iopodmanInterface.CreatePod(ctx, VarlinkCall{call}, in.Create)
 
 	case "ListPods":
-		return s.iopodmanInterface.ListPods(VarlinkCall{call})
+		return s.iopodmanInterface.ListPods(ctx, VarlinkCall{call})
 
 	case "GetPod":
 		var in struct {
@@ -7080,9 +7081,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetPod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.GetPod(ctx, VarlinkCall{call}, in.Name)
 
 	case "InspectPod":
 		var in struct {
@@ -7090,9 +7091,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.InspectPod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.InspectPod(ctx, VarlinkCall{call}, in.Name)
 
 	case "StartPod":
 		var in struct {
@@ -7100,9 +7101,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.StartPod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.StartPod(ctx, VarlinkCall{call}, in.Name)
 
 	case "StopPod":
 		var in struct {
@@ -7111,9 +7112,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.StopPod(VarlinkCall{call}, in.Name, in.Timeout)
+		return s.iopodmanInterface.StopPod(ctx, VarlinkCall{call}, in.Name, in.Timeout)
 
 	case "RestartPod":
 		var in struct {
@@ -7121,9 +7122,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.RestartPod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.RestartPod(ctx, VarlinkCall{call}, in.Name)
 
 	case "KillPod":
 		var in struct {
@@ -7132,9 +7133,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.KillPod(VarlinkCall{call}, in.Name, in.Signal)
+		return s.iopodmanInterface.KillPod(ctx, VarlinkCall{call}, in.Name, in.Signal)
 
 	case "PausePod":
 		var in struct {
@@ -7142,9 +7143,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.PausePod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.PausePod(ctx, VarlinkCall{call}, in.Name)
 
 	case "UnpausePod":
 		var in struct {
@@ -7152,9 +7153,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.UnpausePod(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.UnpausePod(ctx, VarlinkCall{call}, in.Name)
 
 	case "RemovePod":
 		var in struct {
@@ -7163,9 +7164,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.RemovePod(VarlinkCall{call}, in.Name, in.Force)
+		return s.iopodmanInterface.RemovePod(ctx, VarlinkCall{call}, in.Name, in.Force)
 
 	case "TopPod":
 		var in struct {
@@ -7175,9 +7176,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.TopPod(VarlinkCall{call}, in.Pod, in.Latest, []string(in.Descriptors))
+		return s.iopodmanInterface.TopPod(ctx, VarlinkCall{call}, in.Pod, in.Latest, []string(in.Descriptors))
 
 	case "GetPodStats":
 		var in struct {
@@ -7185,9 +7186,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetPodStats(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.GetPodStats(ctx, VarlinkCall{call}, in.Name)
 
 	case "GetPodsByStatus":
 		var in struct {
@@ -7195,9 +7196,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetPodsByStatus(VarlinkCall{call}, []string(in.Statuses))
+		return s.iopodmanInterface.GetPodsByStatus(ctx, VarlinkCall{call}, []string(in.Statuses))
 
 	case "ImageExists":
 		var in struct {
@@ -7205,9 +7206,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ImageExists(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.ImageExists(ctx, VarlinkCall{call}, in.Name)
 
 	case "ContainerExists":
 		var in struct {
@@ -7215,9 +7216,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerExists(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.ContainerExists(ctx, VarlinkCall{call}, in.Name)
 
 	case "ContainerCheckpoint":
 		var in struct {
@@ -7228,9 +7229,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerCheckpoint(VarlinkCall{call}, in.Name, in.Keep, in.LeaveRunning, in.TcpEstablished)
+		return s.iopodmanInterface.ContainerCheckpoint(ctx, VarlinkCall{call}, in.Name, in.Keep, in.LeaveRunning, in.TcpEstablished)
 
 	case "ContainerRestore":
 		var in struct {
@@ -7240,9 +7241,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerRestore(VarlinkCall{call}, in.Name, in.Keep, in.TcpEstablished)
+		return s.iopodmanInterface.ContainerRestore(ctx, VarlinkCall{call}, in.Name, in.Keep, in.TcpEstablished)
 
 	case "ContainerRunlabel":
 		var in struct {
@@ -7250,9 +7251,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerRunlabel(VarlinkCall{call}, in.Runlabel)
+		return s.iopodmanInterface.ContainerRunlabel(ctx, VarlinkCall{call}, in.Runlabel)
 
 	case "ExecContainer":
 		var in struct {
@@ -7260,12 +7261,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ExecContainer(VarlinkCall{call}, in.Opts)
+		return s.iopodmanInterface.ExecContainer(ctx, VarlinkCall{call}, in.Opts)
 
 	case "ListContainerMounts":
-		return s.iopodmanInterface.ListContainerMounts(VarlinkCall{call})
+		return s.iopodmanInterface.ListContainerMounts(ctx, VarlinkCall{call})
 
 	case "MountContainer":
 		var in struct {
@@ -7273,9 +7274,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.MountContainer(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.MountContainer(ctx, VarlinkCall{call}, in.Name)
 
 	case "UnmountContainer":
 		var in struct {
@@ -7284,9 +7285,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.UnmountContainer(VarlinkCall{call}, in.Name, in.Force)
+		return s.iopodmanInterface.UnmountContainer(ctx, VarlinkCall{call}, in.Name, in.Force)
 
 	case "ImagesPrune":
 		var in struct {
@@ -7294,9 +7295,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ImagesPrune(VarlinkCall{call}, in.All)
+		return s.iopodmanInterface.ImagesPrune(ctx, VarlinkCall{call}, in.All)
 
 	case "GenerateKube":
 		var in struct {
@@ -7305,9 +7306,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GenerateKube(VarlinkCall{call}, in.Name, in.Service)
+		return s.iopodmanInterface.GenerateKube(ctx, VarlinkCall{call}, in.Name, in.Service)
 
 	case "ContainerConfig":
 		var in struct {
@@ -7315,9 +7316,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerConfig(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.ContainerConfig(ctx, VarlinkCall{call}, in.Name)
 
 	case "ContainerArtifacts":
 		var in struct {
@@ -7326,9 +7327,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerArtifacts(VarlinkCall{call}, in.Name, in.ArtifactName)
+		return s.iopodmanInterface.ContainerArtifacts(ctx, VarlinkCall{call}, in.Name, in.ArtifactName)
 
 	case "ContainerInspectData":
 		var in struct {
@@ -7337,9 +7338,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerInspectData(VarlinkCall{call}, in.Name, in.Size)
+		return s.iopodmanInterface.ContainerInspectData(ctx, VarlinkCall{call}, in.Name, in.Size)
 
 	case "ContainerStateData":
 		var in struct {
@@ -7347,9 +7348,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ContainerStateData(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.ContainerStateData(ctx, VarlinkCall{call}, in.Name)
 
 	case "PodStateData":
 		var in struct {
@@ -7357,9 +7358,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.PodStateData(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.PodStateData(ctx, VarlinkCall{call}, in.Name)
 
 	case "CreateFromCC":
 		var in struct {
@@ -7367,9 +7368,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.CreateFromCC(VarlinkCall{call}, []string(in.In))
+		return s.iopodmanInterface.CreateFromCC(ctx, VarlinkCall{call}, []string(in.In))
 
 	case "Spec":
 		var in struct {
@@ -7377,9 +7378,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Spec(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.Spec(ctx, VarlinkCall{call}, in.Name)
 
 	case "SendFile":
 		var in struct {
@@ -7388,9 +7389,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.SendFile(VarlinkCall{call}, in.Type, in.Length)
+		return s.iopodmanInterface.SendFile(ctx, VarlinkCall{call}, in.Type, in.Length)
 
 	case "ReceiveFile":
 		var in struct {
@@ -7399,9 +7400,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ReceiveFile(VarlinkCall{call}, in.Path, in.Delete)
+		return s.iopodmanInterface.ReceiveFile(ctx, VarlinkCall{call}, in.Path, in.Delete)
 
 	case "VolumeCreate":
 		var in struct {
@@ -7409,9 +7410,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.VolumeCreate(VarlinkCall{call}, in.Options)
+		return s.iopodmanInterface.VolumeCreate(ctx, VarlinkCall{call}, in.Options)
 
 	case "VolumeRemove":
 		var in struct {
@@ -7419,9 +7420,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.VolumeRemove(VarlinkCall{call}, in.Options)
+		return s.iopodmanInterface.VolumeRemove(ctx, VarlinkCall{call}, in.Options)
 
 	case "GetVolumes":
 		var in struct {
@@ -7430,12 +7431,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetVolumes(VarlinkCall{call}, []string(in.Args), in.All)
+		return s.iopodmanInterface.GetVolumes(ctx, VarlinkCall{call}, []string(in.Args), in.All)
 
 	case "VolumesPrune":
-		return s.iopodmanInterface.VolumesPrune(VarlinkCall{call})
+		return s.iopodmanInterface.VolumesPrune(ctx, VarlinkCall{call})
 
 	case "ImageSave":
 		var in struct {
@@ -7443,9 +7444,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.ImageSave(VarlinkCall{call}, in.Options)
+		return s.iopodmanInterface.ImageSave(ctx, VarlinkCall{call}, in.Options)
 
 	case "GetPodsByContext":
 		var in struct {
@@ -7455,9 +7456,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetPodsByContext(VarlinkCall{call}, in.All, in.Latest, []string(in.Args))
+		return s.iopodmanInterface.GetPodsByContext(ctx, VarlinkCall{call}, in.All, in.Latest, []string(in.Args))
 
 	case "LoadImage":
 		var in struct {
@@ -7468,9 +7469,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.LoadImage(VarlinkCall{call}, in.Name, in.InputFile, in.Quiet, in.DeleteFile)
+		return s.iopodmanInterface.LoadImage(ctx, VarlinkCall{call}, in.Name, in.InputFile, in.Quiet, in.DeleteFile)
 
 	case "GetEvents":
 		var in struct {
@@ -7480,9 +7481,9 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.GetEvents(VarlinkCall{call}, []string(in.Filter), in.Since, in.Until)
+		return s.iopodmanInterface.GetEvents(ctx, VarlinkCall{call}, []string(in.Filter), in.Since, in.Until)
 
 	case "Diff":
 		var in struct {
@@ -7490,12 +7491,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.Diff(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.Diff(ctx, VarlinkCall{call}, in.Name)
 
 	case "GetLayersMapWithImageInfo":
-		return s.iopodmanInterface.GetLayersMapWithImageInfo(VarlinkCall{call})
+		return s.iopodmanInterface.GetLayersMapWithImageInfo(ctx, VarlinkCall{call})
 
 	case "BuildImageHierarchyMap":
 		var in struct {
@@ -7503,12 +7504,12 @@ func (s *VarlinkInterface) VarlinkDispatch(call varlink.Call, methodname string)
 		}
 		err := call.GetParameters(&in)
 		if err != nil {
-			return call.ReplyInvalidParameter("parameters")
+			return call.ReplyInvalidParameter(ctx, "parameters")
 		}
-		return s.iopodmanInterface.BuildImageHierarchyMap(VarlinkCall{call}, in.Name)
+		return s.iopodmanInterface.BuildImageHierarchyMap(ctx, VarlinkCall{call}, in.Name)
 
 	default:
-		return call.ReplyMethodNotFound(methodname)
+		return call.ReplyMethodNotFound(ctx, methodname)
 	}
 }
 

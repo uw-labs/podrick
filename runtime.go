@@ -1,6 +1,7 @@
 package podrick
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -8,22 +9,25 @@ import (
 
 // Runtime supports starting containers.
 type Runtime interface {
-	io.Closer
-	Connect() error
-	StartContainer(*ContainerConfig) (Container, error)
+	Close(context.Context) error
+	Connect(context.Context) error
+	StartContainer(context.Context, *ContainerConfig) (Container, error)
 }
 
 // Container represents a running container.
 type Container interface {
-	io.Closer
+	// Context releases resources associated with the container.
+	Close(context.Context) error
 	// Address contains the IP and port of the running container.
 	Address() string
 	// StreamLogs asynchronously streams logs from the
 	// running container to the writer. The writer must
 	// be safe for concurrent use.
+	// If the context is cancelled after logging has been set up,
+	// it has no effect. Use Close to stop logging.
 	// This function is called automatically on the runtimes
 	// configured logger, so there is no need to explicitly call this.
-	StreamLogs(io.Writer) error
+	StreamLogs(context.Context, io.Writer) error
 }
 
 var autoRuntimes []Runtime
@@ -39,14 +43,14 @@ type autoRuntime struct {
 }
 
 // Connect establishes a connection with the underlying runtime.
-func (r *autoRuntime) Connect() error {
+func (r *autoRuntime) Connect(ctx context.Context) error {
 	if len(autoRuntimes) == 0 {
 		return errors.New("no container runtimes registered, import one or choose explicitly")
 	}
 
 	var errs []error
 	for _, r.Runtime = range autoRuntimes {
-		err := r.Runtime.Connect()
+		err := r.Runtime.Connect(ctx)
 		if err == nil {
 			return nil
 		}

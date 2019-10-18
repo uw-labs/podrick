@@ -1,6 +1,7 @@
 package docker_test
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -25,6 +26,8 @@ type jsonResp struct {
 }
 
 func TestHTTPBin(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	lc := func(address string) error {
 		u := &url.URL{
 			Scheme: "http",
@@ -34,7 +37,7 @@ func TestHTTPBin(t *testing.T) {
 		_, err := http.Get(u.String())
 		return err
 	}
-	ctr, err := podrick.StartContainer("docker.io/kennethreitz/httpbin", "latest", "80",
+	ctr, err := podrick.StartContainer(ctx, "docker.io/kennethreitz/httpbin", "latest", "80",
 		podrick.WithLogger((*testLogger)(t)),
 		podrick.WithLivenessCheck(lc),
 	)
@@ -42,7 +45,7 @@ func TestHTTPBin(t *testing.T) {
 		t.Fatalf("Failed to start container: %v", err)
 	}
 	defer func() {
-		cErr := ctr.Close()
+		cErr := ctr.Close(context.Background())
 		if cErr != nil {
 			t.Fatal(cErr)
 		}

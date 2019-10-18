@@ -1,16 +1,17 @@
 package podrick
 
 import (
+	"context"
 	"fmt"
 	"time"
 
-	"github.com/cenkalti/backoff"
+	backoff "github.com/cenkalti/backoff/v3"
 	"logur.dev/logur"
 )
 
 // StartContainer starts a container using the configured runtime.
 // By default, a runtime is chosen automatically from those registered.
-func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container, err error) {
+func StartContainer(ctx context.Context, repo, tag, port string, opts ...func(*config)) (_ Container, err error) {
 	conf := config{
 		ContainerConfig: ContainerConfig{
 			Repo: repo,
@@ -24,13 +25,13 @@ func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container,
 		o(&conf)
 	}
 
-	err = conf.runtime.Connect()
+	err = conf.runtime.Connect(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to runtime: %w", err)
 	}
 	defer func() {
 		if err != nil {
-			cErr := conf.runtime.Close()
+			cErr := conf.runtime.Close(context.Background())
 			if cErr != nil {
 				conf.logger.Error("failed to close runtime", map[string]interface{}{
 					"error": cErr.Error(),
@@ -39,13 +40,13 @@ func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container,
 		}
 	}()
 
-	ctr, err := conf.runtime.StartContainer(&conf.ContainerConfig)
+	ctr, err := conf.runtime.StartContainer(ctx, &conf.ContainerConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start container: %w", err)
 	}
 	defer func() {
 		if err != nil {
-			cErr := ctr.Close()
+			cErr := ctr.Close(context.Background())
 			if cErr != nil {
 				conf.logger.Error("failed to close container", map[string]interface{}{
 					"error": cErr.Error(),
@@ -54,7 +55,7 @@ func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container,
 		}
 	}()
 
-	err = ctr.StreamLogs(logur.NewWriter(conf.logger))
+	err = ctr.StreamLogs(ctx, logur.NewWriter(conf.logger))
 	if err != nil {
 		return nil, fmt.Errorf("failed to stream container logs: %w", err)
 	}
@@ -62,15 +63,16 @@ func StartContainer(repo, tag, port string, opts ...func(*config)) (_ Container,
 	if conf.liveCheck != nil {
 		bk := backoff.NewExponentialBackOff()
 		bk.MaxElapsedTime = 10 * time.Second
+		cbk := backoff.WithContext(bk, ctx)
 		err = backoff.RetryNotify(
 			func() error {
 				return conf.liveCheck(ctr.Address())
 			},
-			bk,
+			cbk,
 			func(err error, next time.Duration) {
 				conf.logger.Error("Liveness check failed", map[string]interface{}{
 					"retry_in": next.Truncate(time.Millisecond).String(),
-					"error":    err,
+					"error":    err.Error(),
 				})
 			},
 		)
