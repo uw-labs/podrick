@@ -1,10 +1,19 @@
 # Change Log
 
+## [v0.3.0](https://github.com/uw-labs/podrick/tree/v0.3.0) (2019-10-18)
+[Full Changelog](https://github.com/uw-labs/podrick/compare/v0.2.0...v0.3.0)
+
+**Merged pull requests:**
+
+- Add context to methods [\#6](https://github.com/uw-labs/podrick/pull/6) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update README with liveness check [\#5](https://github.com/uw-labs/podrick/pull/5) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v0.2.0](https://github.com/uw-labs/podrick/tree/v0.2.0) (2019-10-10)
 [Full Changelog](https://github.com/uw-labs/podrick/compare/v0.1.0...v0.2.0)
 
 **Merged pull requests:**
 
+- Add changelog for v0.2.0 [\#4](https://github.com/uw-labs/podrick/pull/4) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Add liveness check option [\#3](https://github.com/uw-labs/podrick/pull/3) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Format files [\#2](https://github.com/uw-labs/podrick/pull/2) ([johanbrandhorst](https://github.com/johanbrandhorst))
 
