@@ -1,33 +1,37 @@
 package docker
 
 import (
-	"github.com/ory/dockertest"
-	"github.com/ory/dockertest/docker"
+	"strings"
+
+	ct "github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/go-connections/nat"
+	units "github.com/docker/go-units"
 	"github.com/uw-labs/podrick"
 )
 
-func createConfig(conf *podrick.ContainerConfig) (*dockertest.RunOptions, []func(*docker.HostConfig)) {
-	runOpts := &dockertest.RunOptions{
-		Repository:   conf.Repo,
-		Tag:          conf.Tag,
-		ExposedPorts: []string{conf.Port},
-	}
-	if len(conf.Cmd) > 0 {
-		runOpts.Cmd = conf.Cmd
-	}
-	if len(conf.Env) > 0 {
-		runOpts.Env = conf.Env
+func createConfig(conf *podrick.ContainerConfig) (*ct.Config, *ct.HostConfig, *network.NetworkingConfig) {
+	dc := &ct.Config{
+		Image:        conf.Repo + ":" + conf.Tag,
+		Env:          conf.Env,
+		Cmd:          conf.Cmd,
+		ExposedPorts: nat.PortSet{nat.Port(conf.Port): struct{}{}},
 	}
 	if conf.Entrypoint != nil {
-		runOpts.Entrypoint = []string{*conf.Entrypoint}
+		dc.Entrypoint = strings.Split(*conf.Entrypoint, " ")
 	}
-	var hostOpts []func(*docker.HostConfig)
-	if len(conf.Ulimits) > 0 {
-		hostOpts = append(hostOpts, func(in *docker.HostConfig) {
-			for _, ulimit := range conf.Ulimits {
-				in.Ulimits = append(in.Ulimits, docker.ULimit(ulimit))
-			}
+
+	hc := &ct.HostConfig{
+		PublishAllPorts: true,
+	}
+	for _, ulimit := range conf.Ulimits {
+		hc.Ulimits = append(hc.Ulimits, &units.Ulimit{
+			Name: ulimit.Name,
+			Hard: ulimit.Hard,
+			Soft: ulimit.Soft,
 		})
 	}
-	return runOpts, hostOpts
+
+	nc := &network.NetworkingConfig{}
+	return dc, hc, nc
 }

@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"sync"
 
 	"github.com/varlink/go/varlink"
 	"logur.dev/logur"
@@ -28,11 +29,11 @@ type Runtime struct {
 
 	address string
 	conn    *varlink.Connection
-	close   func() error
+	close   func(context.Context) error
 }
 
 // Connect connects to the podman varlink API.
-func (r *Runtime) Connect() (err error) {
+func (r *Runtime) Connect(ctx context.Context) (err error) {
 	if r.Logger == nil {
 		r.Logger = logur.NewNoopLogger()
 	}
@@ -42,14 +43,16 @@ func (r *Runtime) Connect() (err error) {
 		r.address = "unix:/run/podman/io.podman"
 	}
 
-	r.conn, err = varlink.NewConnection(r.address)
+	r.conn, err = varlink.NewConnection(ctx, r.address)
 	if err != nil {
 		return fmt.Errorf("failed to connect to podman: %w", err)
 	}
-	r.close = r.conn.Close
+	r.close = func(_ context.Context) error {
+		return r.conn.Close()
+	}
 	defer func() {
 		if err != nil {
-			cErr := r.Close()
+			cErr := r.Close(context.Background())
 			if cErr != nil {
 				r.Logger.Error("failed to close runtime during error", map[string]interface{}{
 					"error": cErr.Error(),
@@ -58,7 +61,7 @@ func (r *Runtime) Connect() (err error) {
 		}
 	}()
 
-	_, err = podman.GetInfo().Call(r.conn)
+	_, err = podman.GetInfo().Call(ctx, r.conn)
 	if err != nil {
 		return fmt.Errorf("failed to ping podman: %w", err)
 	}
@@ -67,21 +70,21 @@ func (r *Runtime) Connect() (err error) {
 }
 
 // Close releases the resources of the Runtime.
-func (r *Runtime) Close() error {
-	return r.close()
+func (r *Runtime) Close(ctx context.Context) error {
+	return r.close(ctx)
 }
 
 // StartContainer starts a container with Podman as the backing runtime.
-func (r *Runtime) StartContainer(conf *podrick.ContainerConfig) (_ podrick.Container, err error) {
+func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerConfig) (_ podrick.Container, err error) {
 	ctr := &container{
 		runtime: r,
 	}
-	ctr.id, err = podman.CreateContainer().Call(r.conn, createConfig(conf))
+	ctr.id, err = podman.CreateContainer().Call(ctx, r.conn, createConfig(conf))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create container: %w", err)
 	}
-	ctr.close = func() error {
-		_, rErr := podman.RemoveContainer().Call(r.conn, ctr.id, false, true)
+	ctr.close = func(ctx context.Context) error {
+		_, rErr := podman.RemoveContainer().Call(ctx, r.conn, ctr.id, false, true)
 		if rErr != nil {
 			return fmt.Errorf("failed to remove container: %w", rErr)
 		}
@@ -89,7 +92,7 @@ func (r *Runtime) StartContainer(conf *podrick.ContainerConfig) (_ podrick.Conta
 	}
 	defer func() {
 		if err != nil {
-			cErr := ctr.Close()
+			cErr := ctr.Close(context.Background())
 			if cErr != nil {
 				r.Logger.Error("failed to close container during error", map[string]interface{}{
 					"error": cErr.Error(),
@@ -98,20 +101,20 @@ func (r *Runtime) StartContainer(conf *podrick.ContainerConfig) (_ podrick.Conta
 		}
 	}()
 
-	_, err = podman.StartContainer().Call(r.conn, ctr.id)
+	_, err = podman.StartContainer().Call(ctx, r.conn, ctr.id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start container: %w", err)
 	}
 	cls2 := ctr.close
-	ctr.close = func() error {
-		_, kErr := podman.StopContainer().Call(r.conn, ctr.id, 5)
+	ctr.close = func(ctx context.Context) error {
+		_, kErr := podman.StopContainer().Call(ctx, r.conn, ctr.id, 5)
 		if kErr != nil {
 			return fmt.Errorf("failed to stop container: %w", kErr)
 		}
-		return cls2()
+		return cls2(ctx)
 	}
 
-	ct, err := podman.GetContainer().Call(r.conn, ctr.id)
+	ct, err := podman.GetContainer().Call(ctx, r.conn, ctr.id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get container information: %w", err)
 	}
@@ -132,7 +135,7 @@ func (r *Runtime) StartContainer(conf *podrick.ContainerConfig) (_ podrick.Conta
 type container struct {
 	address string
 	id      string
-	close   func() error
+	close   func(context.Context) error
 
 	runtime *Runtime
 }
@@ -141,28 +144,28 @@ func (c *container) Address() string {
 	return c.address
 }
 
-func (c *container) Close() error {
-	return c.close()
+func (c *container) Close(ctx context.Context) error {
+	return c.close(ctx)
 }
 
-func (c *container) StreamLogs(w io.Writer) (err error) {
-	logC, err := varlink.NewConnection(c.runtime.address)
+func (c *container) StreamLogs(ctx context.Context, w io.Writer) (err error) {
+	logC, err := varlink.NewConnection(ctx, c.runtime.address)
 	if err != nil {
 		return fmt.Errorf("failed to get log connection: %w", err)
 	}
 	cls2 := c.close
-	c.close = func() error {
+	c.close = func(ctx context.Context) error {
 		cErr := logC.Close()
 		if cErr != nil {
 			c.runtime.Logger.Error("failed to close logger connection", map[string]interface{}{
 				"error": cErr.Error(),
 			})
 		}
-		return cls2()
+		return cls2(ctx)
 	}
 	defer func() {
 		if err != nil {
-			cErr := c.Close()
+			cErr := c.Close(context.Background())
 			if cErr != nil {
 				c.runtime.Logger.Error("failed to close container during error", map[string]interface{}{
 					"error": cErr.Error(),
@@ -171,29 +174,32 @@ func (c *container) StreamLogs(w io.Writer) (err error) {
 		}
 	}()
 
-	logFn, err := podman.GetContainerLogs().Send(logC, varlink.More, c.id)
+	logFn, err := podman.GetContainerLogs().Send(ctx, logC, varlink.More, c.id)
 	if err != nil {
 		return fmt.Errorf("Failed get container logs: %w", err)
 	}
+
+	// Decouple lifetime of goroutine from input context
 	ctx, cancel := context.WithCancel(context.Background())
-	done := make(chan struct{})
+	wg := &sync.WaitGroup{}
 
 	cls3 := c.close
-	c.close = func() error {
+	c.close = func(ctx context.Context) error {
 		cancel()
 		// Ensure goroutine has exited
-		<-done
-		return cls3()
+		wg.Wait()
+		return cls3(ctx)
 	}
+	wg.Add(1)
 	go func() {
-		defer close(done)
+		defer wg.Done()
 		for {
 			select {
 			case <-ctx.Done():
 				return
 			default:
 			}
-			lines, f, err := logFn()
+			lines, f, err := logFn(ctx)
 			if err != nil {
 				c.runtime.Logger.Error("failed to get container logs", map[string]interface{}{
 					"error": err.Error(),
