@@ -1,5 +1,7 @@
 package podrick
 
+import "io"
+
 // ContainerConfig is used by runtimes to start
 // containers.
 type ContainerConfig struct {
@@ -12,6 +14,7 @@ type ContainerConfig struct {
 	Entrypoint *string
 	Cmd        []string
 	Ulimits    []Ulimit
+	Files      []File
 }
 
 // Ulimit describes a container ulimit.
@@ -19,4 +22,12 @@ type Ulimit struct {
 	Name string
 	Soft int64
 	Hard int64
+}
+
+// File describes a file in a container.
+// All fields are mandatory
+type File struct {
+	Content io.Reader
+	Path    string
+	Size    int
 }
