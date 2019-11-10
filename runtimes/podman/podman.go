@@ -101,6 +101,13 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 		}
 	}()
 
+	if len(conf.Files) > 0 {
+		err = uploadFiles(ctx, r.conn, ctr.id, conf.Files...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to upload files to container: %w", err)
+		}
+	}
+
 	_, err = podman.StartContainer().Call(ctx, r.conn, ctr.id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start container: %w", err)
