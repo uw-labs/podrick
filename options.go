@@ -55,6 +55,15 @@ func WithLivenessCheck(lc LivenessCheck) func(*config) {
 	}
 }
 
+// WithFileUpload writes the content of the reader to the provided path
+// inside the container, before starting the container. This can
+// be specified multiple times.
+func WithFileUpload(f File) func(*config) {
+	return func(c *config) {
+		c.Files = append(c.Files, f)
+	}
+}
+
 // LivenessCheck is a type used to check the successful startup
 // of a container.
 type LivenessCheck func(address string) error
