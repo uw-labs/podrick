@@ -18,8 +18,11 @@ type Runtime interface {
 type Container interface {
 	// Context releases resources associated with the container.
 	Close(context.Context) error
-	// Address contains the IP and port of the running container.
+	// Address returns the IP and port of the running container.
 	Address() string
+	// AddressForPort returns the address for the specified port,
+	// or an error, if the port was not exposed.
+	AddressForPort(string) (string, error)
 	// StreamLogs asynchronously streams logs from the
 	// running container to the writer. The writer must
 	// be safe for concurrent use.
