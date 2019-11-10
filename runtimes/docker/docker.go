@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"runtime"
 	"sync"
 
 	"github.com/docker/docker/api/types"
@@ -110,11 +109,6 @@ func getBoundAddress(c types.ContainerJSON, port string) string {
 		return ""
 	}
 
-	if runtime.GOOS != "darwin" {
-		return net.JoinHostPort(c.NetworkSettings.IPAddress, port)
-	}
-
-	// Workaround for docker networking differences on Mac
 	ports := c.NetworkSettings.Ports[nat.Port(port+"/tcp")]
 	if len(ports) == 0 {
 		return ""
