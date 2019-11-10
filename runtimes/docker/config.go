@@ -17,6 +17,9 @@ func createConfig(conf *podrick.ContainerConfig) (*ct.Config, *ct.HostConfig, *n
 		Cmd:          conf.Cmd,
 		ExposedPorts: nat.PortSet{nat.Port(conf.Port): struct{}{}},
 	}
+	for _, p := range conf.ExtraPorts {
+		dc.ExposedPorts[nat.Port(p)] = struct{}{}
+	}
 	if conf.Entrypoint != nil {
 		dc.Entrypoint = strings.Split(*conf.Entrypoint, " ")
 	}

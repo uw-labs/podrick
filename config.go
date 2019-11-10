@@ -15,6 +15,7 @@ type ContainerConfig struct {
 	Cmd        []string
 	Ulimits    []Ulimit
 	Files      []File
+	ExtraPorts []string
 }
 
 // Ulimit describes a container ulimit.

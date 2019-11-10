@@ -64,6 +64,14 @@ func WithFileUpload(f File) func(*config) {
 	}
 }
 
+// WithExposePort adds extra ports that should be exposed from the
+// started container.
+func WithExposePort(port string) func(*config) {
+	return func(c *config) {
+		c.ExtraPorts = append(c.ExtraPorts, port)
+	}
+}
+
 // LivenessCheck is a type used to check the successful startup
 // of a container.
 type LivenessCheck func(address string) error

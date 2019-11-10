@@ -126,29 +126,39 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 		return nil, fmt.Errorf("failed to get container information: %w", err)
 	}
 
+	ctr.portToaddress = make(map[string]string)
+
 	for _, p := range ct.Ports {
-		if p.Container_port == conf.Port {
-			ctr.address = net.JoinHostPort(p.Host_ip, p.Host_port)
-			break
-		}
+		ctr.portToaddress[p.Container_port] = net.JoinHostPort(p.Host_ip, p.Host_port)
 	}
-	if ctr.address == "" {
-		return nil, fmt.Errorf("failed to get container IP")
+	if ctr.portToaddress[conf.Port] == "" {
+		return nil, fmt.Errorf("failed to get container address")
 	}
+
+	ctr.address = ctr.portToaddress[conf.Port]
 
 	return ctr, nil
 }
 
 type container struct {
-	address string
-	id      string
-	close   func(context.Context) error
+	address       string
+	portToaddress map[string]string
+	id            string
+	close         func(context.Context) error
 
 	runtime *Runtime
 }
 
-func (c *container) Address() string {
+func (c container) Address() string {
 	return c.address
+}
+
+func (c container) AddressForPort(port string) (string, error) {
+	hostPort, ok := c.portToaddress[port]
+	if !ok {
+		return "", fmt.Errorf("no address found for port %q", port)
+	}
+	return hostPort, nil
 }
 
 func (c *container) Close(ctx context.Context) error {

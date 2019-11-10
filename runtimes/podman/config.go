@@ -18,6 +18,7 @@ func createConfig(conf *podrick.ContainerConfig) podman.Create {
 		Publish:    &[]string{conf.Port},
 		Entrypoint: conf.Entrypoint,
 	}
+	*crt.Publish = append(*crt.Publish, conf.ExtraPorts...)
 	if len(conf.Ulimits) > 0 {
 		var ulimits []string
 		for _, ulimit := range conf.Ulimits {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
-	"github.com/docker/go-connections/nat"
 	"logur.dev/logur"
 
 	"github.com/uw-labs/podrick"
@@ -107,26 +106,30 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 		return nil, fmt.Errorf("failed to inspect container: %w", err)
 	}
 
-	ctr.address = getBoundAddress(ctr.container, conf.Port)
+	if ctr.container.NetworkSettings == nil {
+		return nil, fmt.Errorf("failed to get container network")
+	}
+
+	ctr.portToaddress = make(map[string]string)
+	for addr, hostPorts := range ctr.container.NetworkSettings.Ports {
+		for _, port := range hostPorts {
+			// Will use the last one, don't care for now
+			ctr.portToaddress[addr.Port()] = net.JoinHostPort(port.HostIP, port.HostPort)
+		}
+	}
+
+	if ctr.portToaddress[conf.Port] == "" {
+		return nil, fmt.Errorf("failed to get container address")
+	}
+
+	ctr.address = ctr.portToaddress[conf.Port]
 	return ctr, nil
 }
 
-func getBoundAddress(c types.ContainerJSON, port string) string {
-	if c.NetworkSettings == nil {
-		return ""
-	}
-
-	ports := c.NetworkSettings.Ports[nat.Port(port+"/tcp")]
-	if len(ports) == 0 {
-		return ""
-	}
-
-	return net.JoinHostPort(ports[0].HostIP, ports[0].HostPort)
-}
-
 type container struct {
-	address string
-	close   func(context.Context) error
+	address       string
+	portToaddress map[string]string
+	close         func(context.Context) error
 
 	container types.ContainerJSON
 	runtime   *Runtime
@@ -134,6 +137,14 @@ type container struct {
 
 func (c *container) Address() string {
 	return c.address
+}
+
+func (c container) AddressForPort(port string) (string, error) {
+	hostPort, ok := c.portToaddress[port]
+	if !ok {
+		return "", fmt.Errorf("no address found for port %q", port)
+	}
+	return hostPort, nil
 }
 
 func (c *container) Close(ctx context.Context) error {
