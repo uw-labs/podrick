@@ -84,6 +84,13 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 		return nil, fmt.Errorf("failed to create container: %w", err)
 	}
 
+	if len(conf.Files) > 0 {
+		err = uploadFiles(ctx, r.client, resp.ID, conf.Files...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to upload files to container: %w", err)
+		}
+	}
+
 	if err := r.client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 		return nil, fmt.Errorf("failed to start container: %w", err)
 	}
