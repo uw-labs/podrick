@@ -17,7 +17,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/varlink/go v0.0.0-20191018142704-4ecdbb8a36c2
+	github.com/varlink/go v0.3.0
 	golang.org/x/net v0.0.0-20191014212845-da9a3fd4c582 // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
