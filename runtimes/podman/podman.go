@@ -102,7 +102,7 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 	}()
 
 	if len(conf.Files) > 0 {
-		err = uploadFiles(ctx, r.conn, ctr.id, conf.Files...)
+		err = uploadFiles(ctx, r.address, conf.Files...)
 		if err != nil {
 			return nil, fmt.Errorf("failed to upload files to container: %w", err)
 		}
