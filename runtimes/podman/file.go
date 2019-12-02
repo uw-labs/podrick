@@ -62,5 +62,10 @@ func uploadFile(ctx context.Context, mountDir string, file podrick.File) (err er
 		return fmt.Errorf("failed to copy file contents: %w", err)
 	}
 
+	err = os.Chmod(dest, file.Mode)
+	if err != nil {
+		return fmt.Errorf("failed to set file permissions: %w", err)
+	}
+
 	return nil
 }
