@@ -2,6 +2,7 @@ package podman
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -40,6 +41,12 @@ func uploadFile(ctx context.Context, mountDir string, file podrick.File) (err er
 		return fmt.Errorf("file paths must be absolute: %q", file.Path)
 	}
 	dest := filepath.Join(mountDir, path)
+	if _, err := os.Stat(filepath.Dir(dest)); errors.Is(err, os.ErrNotExist) {
+		err := os.MkdirAll(filepath.Dir(dest), 0644)
+		if err != nil {
+			return fmt.Errorf("failed to create parent directory: %w", err)
+		}
+	}
 	target, err := os.Create(dest)
 	if err != nil {
 		return fmt.Errorf("failed to create file: %w", err)
