@@ -30,9 +30,11 @@ jobs:
       - run:
           name: Update Go installation
           command: |
-            go get github.com/lpar/goup &&
+            wget https://github.com/lpar/goup/releases/download/1.0/goup-linux-x64.xz &&
+            xz --decompress goup-linux-x64.xz &&
+            chmod +x goup-linux-x64
             sudo rm -rf /usr/local/go &&
-            yes | sudo /home/circleci/.go_workspace/bin/goup --force --os linux --arch amd64 || true # swallow exit 141
+            yes | sudo ./goup-linux-x64 --force --os linux --arch amd64 || true # swallow exit 141
       - run:
           name: Install podman
           command: |
