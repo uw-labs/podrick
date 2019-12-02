@@ -33,7 +33,7 @@ func uploadFiles(ctx context.Context, client *docker.Client, cID string, files .
 			}
 			err = archive.WriteHeader(&tar.Header{
 				Name: f.Path,
-				Mode: 0644,
+				Mode: int64(f.Mode),
 				Size: int64(f.Size),
 			})
 			if err != nil {
