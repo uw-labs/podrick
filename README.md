@@ -76,11 +76,11 @@ func TestDatabase(t *testing.T) {
 			"start",
 			"--insecure",
 		}),
-        podrick.WithLogger(log),
-        // Use of the podman runtime only.
-        // The environment variable PODMAN_VARLINK_ADDRESS
-        // can be used to configure where podrick should
-        // look for the varlink API.
+        	podrick.WithLogger(log),
+        	// Use of the podman runtime only.
+        	// The environment variable PODMAN_VARLINK_ADDRESS
+        	// can be used to configure where podrick should
+        	// look for the varlink API.
 		podrick.WithRuntime(&podman.Runtime{
 			Logger: log,
 		}),
