@@ -42,7 +42,7 @@ func uploadFile(ctx context.Context, mountDir string, file podrick.File) (err er
 	}
 	dest := filepath.Join(mountDir, path)
 	if _, err := os.Stat(filepath.Dir(dest)); errors.Is(err, os.ErrNotExist) {
-		err := os.MkdirAll(filepath.Dir(dest), 0644)
+		err := os.MkdirAll(filepath.Dir(dest), 0777)
 		if err != nil {
 			return fmt.Errorf("failed to create parent directory: %w", err)
 		}
