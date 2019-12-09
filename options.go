@@ -1,28 +1,30 @@
 package podrick
 
+type Config func(*config)
+
 // WithEnv configures the environment of the container.
-func WithEnv(in []string) func(*config) {
+func WithEnv(in []string) Config {
 	return func(c *config) {
 		c.ContainerConfig.Env = in
 	}
 }
 
 // WithEntrypoint configures the entrypoint of the container.
-func WithEntrypoint(in string) func(*config) {
+func WithEntrypoint(in string) Config {
 	return func(c *config) {
 		c.ContainerConfig.Entrypoint = &in
 	}
 }
 
 // WithCmd configures the command of the container.
-func WithCmd(in []string) func(*config) {
+func WithCmd(in []string) Config {
 	return func(c *config) {
 		c.ContainerConfig.Cmd = in
 	}
 }
 
 // WithUlimit configures the ulimits of the container.
-func WithUlimit(in []Ulimit) func(*config) {
+func WithUlimit(in []Ulimit) Config {
 	return func(c *config) {
 		c.ContainerConfig.Ulimits = in
 	}
@@ -31,7 +33,7 @@ func WithUlimit(in []Ulimit) func(*config) {
 // WithLogger configures the logger of the container.
 // The containers logs will be logged at Info level to this logger.
 // Some errors during closing may also be logged at Error level.
-func WithLogger(in Logger) func(*config) {
+func WithLogger(in Logger) Config {
 	return func(c *config) {
 		c.logger = in
 	}
@@ -39,7 +41,7 @@ func WithLogger(in Logger) func(*config) {
 
 // WithRuntime configures the Runtime to use to launch the container.
 // By default, the auto runtime is used.
-func WithRuntime(in Runtime) func(*config) {
+func WithRuntime(in Runtime) Config {
 	return func(c *config) {
 		c.runtime = in
 	}
@@ -49,7 +51,7 @@ func WithRuntime(in Runtime) func(*config) {
 // error, to ascertain the successful startup of the container. The
 // function will be retried for 10 seconds, and if it does not return
 // a non-nil error before that time, the last error will be returned.
-func WithLivenessCheck(lc LivenessCheck) func(*config) {
+func WithLivenessCheck(lc LivenessCheck) Config {
 	return func(c *config) {
 		c.liveCheck = lc
 	}
@@ -58,7 +60,7 @@ func WithLivenessCheck(lc LivenessCheck) func(*config) {
 // WithFileUpload writes the content of the reader to the provided path
 // inside the container, before starting the container. This can
 // be specified multiple times.
-func WithFileUpload(f File) func(*config) {
+func WithFileUpload(f File) Config {
 	return func(c *config) {
 		c.Files = append(c.Files, f)
 	}
@@ -66,7 +68,7 @@ func WithFileUpload(f File) func(*config) {
 
 // WithExposePort adds extra ports that should be exposed from the
 // started container.
-func WithExposePort(port string) func(*config) {
+func WithExposePort(port string) Config {
 	return func(c *config) {
 		c.ExtraPorts = append(c.ExtraPorts, port)
 	}

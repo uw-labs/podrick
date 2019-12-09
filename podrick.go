@@ -11,7 +11,7 @@ import (
 
 // StartContainer starts a container using the configured runtime.
 // By default, a runtime is chosen automatically from those registered.
-func StartContainer(ctx context.Context, repo, tag, port string, opts ...func(*config)) (_ Container, err error) {
+func StartContainer(ctx context.Context, repo, tag, port string, opts ...Config) (_ Container, err error) {
 	conf := config{
 		ContainerConfig: ContainerConfig{
 			Repo: repo,
