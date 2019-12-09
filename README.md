@@ -28,12 +28,14 @@ import (
 )
 
 func TestDatabase(t *testing.T) {
-	ctr, err := podrick.StartContainer("kennethreitz/httpbin", "latest", "80")
+	ctx := context.Background()
+
+	ctr, err := podrick.StartContainer(ctx, "kennethreitz/httpbin", "latest", "80")
 	if err != nil {
 		t.Fatalf("Failed to start container: %v", err)
 	}
 	defer func() {
-		err := ctr.Close() // Stops and removes the container.
+		err := ctr.Close(ctx) // Stops and removes the container.
 		if err != nil {
 			t.Error(err.Error())
 		}
@@ -66,7 +68,9 @@ import (
 
 func TestDatabase(t *testing.T) {
 	log := logrusadapter.New(logrus.New())
-	ctr, err := podrick.StartContainer("cockroachdb/cockroach", "v19.1.3", "26257",
+	ctx := context.Background()
+
+	ctr, err := podrick.StartContainer(ctx, "cockroachdb/cockroach", "v19.1.3", "26257",
 		podrick.WithUlimit([]podrick.Ulimit{{
 			Name: "nofile",
 			Soft: 1956,
@@ -76,11 +80,11 @@ func TestDatabase(t *testing.T) {
 			"start",
 			"--insecure",
 		}),
-        	podrick.WithLogger(log),
-        	// Use of the podman runtime only.
-        	// The environment variable PODMAN_VARLINK_ADDRESS
-        	// can be used to configure where podrick should
-        	// look for the varlink API.
+		podrick.WithLogger(log),
+		// Use of the podman runtime only.
+		// The environment variable PODMAN_VARLINK_ADDRESS
+		// can be used to configure where podrick should
+		// look for the varlink API.
 		podrick.WithRuntime(&podman.Runtime{
 			Logger: log,
 		}),
@@ -92,8 +96,9 @@ func TestDatabase(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
+
 	defer func() {
-		err := ctr.Close()
+		err := ctr.Close(ctx)
 		if err != nil {
 			t.Error(err.Error())
 		}
