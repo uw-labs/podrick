@@ -1,5 +1,6 @@
 package podrick
 
+// Option configures the configuration of the started container.
 type Option func(*config)
 
 // WithEnv configures the environment of the container.
