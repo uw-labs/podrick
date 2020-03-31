@@ -84,7 +84,7 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 		return nil, fmt.Errorf("failed to create container: %w", err)
 	}
 	ctr.close = func(ctx context.Context) error {
-		_, rErr := podman.RemoveContainer().Call(ctx, r.conn, ctr.id, false, true)
+		_, rErr := podman.RemoveContainer().Call(ctx, r.conn, ctr.id, true, true)
 		if rErr != nil {
 			return fmt.Errorf("failed to remove container: %w", rErr)
 		}
@@ -111,14 +111,6 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 	_, err = podman.StartContainer().Call(ctx, r.conn, ctr.id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start container: %w", err)
-	}
-	cls2 := ctr.close
-	ctr.close = func(ctx context.Context) error {
-		_, kErr := podman.StopContainer().Call(ctx, r.conn, ctr.id, 5)
-		if kErr != nil {
-			return fmt.Errorf("failed to stop container: %w", kErr)
-		}
-		return cls2(ctx)
 	}
 
 	ct, err := podman.GetContainer().Call(ctx, r.conn, ctr.id)
