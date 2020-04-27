@@ -62,7 +62,7 @@ func StartContainer(ctx context.Context, repo, tag, port string, opts ...Option)
 
 	if conf.liveCheck != nil {
 		bk := backoff.NewExponentialBackOff()
-		bk.MaxElapsedTime = 10 * time.Second
+		bk.MaxElapsedTime = 30 * time.Second
 		cbk := backoff.WithContext(bk, ctx)
 		err = backoff.RetryNotify(
 			func() error {
