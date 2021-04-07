@@ -78,7 +78,7 @@ func (r *Runtime) StartContainer(ctx context.Context, conf *podrick.ContainerCon
 	}
 
 	cc, hc, nc := createConfig(conf)
-	resp, err := r.client.ContainerCreate(ctx, cc, hc, nc, "")
+	resp, err := r.client.ContainerCreate(ctx, cc, hc, nc, nil, "")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create container: %w", err)
 	}
